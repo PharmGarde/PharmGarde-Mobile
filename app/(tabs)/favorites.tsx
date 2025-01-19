@@ -1,12 +1,27 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Colors } from '@/constants/Colors';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 
 const initialPharmacies = [
-  { id: '1', name: 'Pharmacy 1', location: '123 Main St' },
-  { id: '2', name: 'Pharmacy 2', location: '456 Oak Rd' },
-  { id: '3', name: 'Pharmacy 3', location: '789 Pine Ln' },
+  { 
+    id: '1', 
+    name: 'Pharmacy 1', 
+    location: '123 Main St',
+    image: 'https://example.com/pharmacy1.jpg' 
+  },
+  { 
+    id: '2', 
+    name: 'Pharmacy 2', 
+    location: '456 Oak Rd',
+    image: 'https://example.com/pharmacy2.jpg' 
+  },
+  { 
+    id: '3', 
+    name: 'Pharmacy 3', 
+    location: '789 Pine Ln',
+    image: 'https://example.com/pharmacy3.jpg' 
+  },
 ];
 
 const Favorites = () => {
@@ -19,8 +34,12 @@ const Favorites = () => {
   const renderPharmacyItem = ({ item }) => (
     <View style={styles.pharmacyItem}>
       <View style={styles.pharmacyInfo}>
-        <View style={styles.iconContainer}>
-          <IconSymbol name="cross.circle.fill" size={24} color={Colors.light.tint} />
+        <View style={styles.imageContainer}>
+          <Image
+            source={{ uri: item.image }}
+            style={styles.pharmacyImage}
+            defaultSource={require('@/assets/images/default-pharmacy.jpg')} 
+          />
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.pharmacyName}>{item.name}</Text>
@@ -69,7 +88,7 @@ const Favorites = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F8F9', // Slightly off-white background
+    backgroundColor: '#F7F8F9',
   },
   header: {
     padding: 20,
@@ -113,8 +132,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  iconContainer: {
+  imageContainer: {
     marginRight: 12,
+  },
+  pharmacyImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 12,
+    backgroundColor: '#F0F2F5', // Placeholder background color
   },
   textContainer: {
     flex: 1,

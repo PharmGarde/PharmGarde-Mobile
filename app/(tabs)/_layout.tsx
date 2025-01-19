@@ -32,7 +32,7 @@ export default function TabLayout() {
           borderTopWidth: 0,
         },
         tabBarItemStyle: {
-          height: 50,  // Set explicit height
+          height: 50,  
         },
       }}
     >
@@ -44,7 +44,7 @@ export default function TabLayout() {
               flex: 1,
               alignItems: 'center',
               justifyContent: 'center',
-              paddingTop: 4, // Small adjustment to account for the indicator space
+              paddingTop: 4, 
             }}>
               {focused && (
                 <View
@@ -75,7 +75,7 @@ export default function TabLayout() {
               flex: 1,
               alignItems: 'center',
               justifyContent: 'center',
-              paddingTop: 4, // Small adjustment to account for the indicator space
+              paddingTop: 4, 
             }}>
               {focused && (
                 <View
