@@ -1,10 +1,8 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { Platform } from 'react-native';
+import { Platform, View } from 'react-native';
 
-import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -14,30 +12,90 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          position: 'absolute',
+          backgroundColor: '#FFFFFF',
+          borderRadius: 15,
+          marginHorizontal: 16,
+          marginBottom: 12,
+          height: 50,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
           },
-          default: {},
-        }),
-      }}>
+          shadowOpacity: 0.15,
+          shadowRadius: 10,
+          elevation: 8,
+          borderTopWidth: 0,
+        },
+        tabBarItemStyle: {
+          height: 50,  // Set explicit height
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <View style={{ 
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: 4, // Small adjustment to account for the indicator space
+            }}>
+              {focused && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: -12, 
+                    width: 40,
+                    height: 4,
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 2,
+                  }}
+                />
+              )}
+              <IconSymbol
+                size={25}
+                name="house.fill"
+                color={Colors[colorScheme ?? 'light'].tint}
+              />
+            </View>
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="favorites"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <View style={{ 
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingTop: 4, // Small adjustment to account for the indicator space
+            }}>
+              {focused && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: -12, 
+                    width: 40,
+                    height: 4,
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: 2,
+                  }}
+                />
+              )}
+              <IconSymbol
+                size={25}
+                name="heart.fill"
+                color={Colors[colorScheme ?? 'light'].tint}
+              />
+            </View>
+          ),
         }}
       />
     </Tabs>
