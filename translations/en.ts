@@ -17,6 +17,7 @@ export default {
     signUp: "Sign Up",
     usernameRequired: "Username is required",
     passwordRequired: "Password is required",
+    forgotPassword: "Forgot Password?",
   },
 
   signUp: {
@@ -73,6 +74,30 @@ export default {
     required: "Please enter the verification code",
     success: "Account confirmed successfully",
     resent: "Verification code has been resent",
+    error: "An error occurred. Please try again.",
+  },
+  forgotPassword: {
+    title: "Forgot Password",
+    subtitle: "Enter your username to reset your password",
+    username: "Username",
+    enterUsername: "Enter your username",
+    submit: "Send Reset Code",
+    backToSignIn: "Back to Sign In",
+    required: "Username is required",
+    success: "Reset code sent successfully",
+    error: "An error occurred. Please try again.",
+  },
+  resetPassword: {
+    title: "Reset Password",
+    subtitle: "Enter the code sent to your email and your new password",
+    code: "Reset Code",
+    enterCode: "Enter reset code",
+    newPassword: "New Password",
+    enterNewPassword: "Enter new password",
+    submit: "Reset Password",
+    required: "All fields are required",
+    passwordTooShort: "Password must be at least 8 characters",
+    success: "Password reset successfully",
     error: "An error occurred. Please try again.",
   },
 };

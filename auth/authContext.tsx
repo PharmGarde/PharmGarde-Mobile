@@ -7,6 +7,7 @@ import {
   type SignUpOutput,
 } from "@aws-amplify/auth";
 import { createContext, useContext, useEffect, useState } from "react";
+import { authService } from "./authService";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -20,9 +21,14 @@ type AuthContextType = {
     given_name: string;
     family_name: string;
     phone_number: string;
-    picture?: string;
   }) => Promise<SignUpOutput>;
   signOut: () => Promise<void>;
+  forgotPassword: (username: string) => Promise<void>;
+  resetPassword: (
+    username: string,
+    code: string,
+    newPassword: string
+  ) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -72,7 +78,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     given_name,
     family_name,
     phone_number,
-    picture,
   }: {
     username: string;
     password: string;
@@ -80,7 +85,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     given_name: string;
     family_name: string;
     phone_number: string;
-    picture?: string;
   }) => {
     try {
       const signUpResult = await signUp({
@@ -92,7 +96,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             given_name,
             family_name,
             phone_number,
-            ...(picture && { picture }),
           },
         },
       });
@@ -111,6 +114,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
   };
+  const handleForgotPassword = async (username: string) => {
+    try {
+      await authService.forgotPassword(username);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleResetPassword = async (
+    username: string,
+    code: string,
+    newPassword: string
+  ) => {
+    try {
+      await authService.confirmForgotPassword(username, code, newPassword);
+    } catch (error) {
+      throw error;
+    }
+  };
 
   return (
     <AuthContext.Provider
@@ -121,6 +143,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signIn: handleSignIn,
         signUp: handleSignUp,
         signOut: handleSignOut,
+        forgotPassword: handleForgotPassword,
+        resetPassword: handleResetPassword,
       }}
     >
       {children}

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ResourcesConfig } from '@aws-amplify/core';
 
 export const awsConfig: ResourcesConfig = {

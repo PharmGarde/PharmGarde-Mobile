@@ -150,13 +150,28 @@ export default function SignIn() {
 
             {/* Password Input */}
             <View className="w-full mt-4">
-              <Text
-                className={`text-sm font-medium text-gray-700 mb-1.5 ${
-                  isRTL ? "text-right" : "text-left"
+              <View
+                className={`flex-row justify-between items-center mb-1.5 ${
+                  isRTL ? "flex-row-reverse" : ""
                 }`}
               >
-                {t("signIn.password")}
-              </Text>
+                <Text
+                  className={`text-sm font-medium text-gray-700 ${
+                    isRTL ? "text-right" : "text-left"
+                  }`}
+                >
+                  {t("signIn.password")}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => router.push("/(auth)/forgot-password")}
+                  disabled={isLoading}
+                >
+                  <Text className="text-primary text-sm font-medium">
+                    {t("signIn.forgotPassword")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
               <TextInput
                 style={{
                   textAlign: isRTL ? "right" : "left",
