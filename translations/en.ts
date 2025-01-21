@@ -18,4 +18,49 @@ export default {
     usernameRequired: "Username is required",
     passwordRequired: "Password is required",
   },
+
+  signUp: {
+    createAccount: "Create Account",
+    getStarted: "Sign up to get started",
+    username: "Username",
+    enterUsername: "Enter your username",
+    email: "Email",
+    enterEmail: "Enter your email",
+    password: "Password",
+    createPassword: "Create a password",
+    firstName: "First Name",
+    enterFirstName: "Enter your first name",
+    lastName: "Last Name",
+    enterLastName: "Enter your last name",
+    phoneNumber: "Phone Number",
+    enterPhoneNumber: "+15555555555",
+    signUp: "Sign Up",
+    alreadyHaveAccount: "Already have an account?",
+    signIn: "Sign In",
+  },
+  validation: {
+    username: {
+      required: "Username is required",
+    },
+    email: {
+      required: "Email is required",
+      invalid: "Please enter a valid email address",
+    },
+    password: {
+      required: "Password is required",
+      tooShort: "Password must be at least 8 characters long",
+    },
+    given_name: {
+      required: "First name is required",
+    },
+    family_name: {
+      required: "Last name is required",
+    },
+    phone_number: {
+      required: "Phone number is required",
+    },
+    general: {
+      error: "An error occurred. Please try again.",
+    },
+  },
 };

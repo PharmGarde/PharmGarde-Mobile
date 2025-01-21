@@ -5,16 +5,36 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../auth/authContext";
-import { StatusBar } from "expo-status-bar";
+import { useTranslation } from "react-i18next";
+import { useLayoutDirection } from "@/hooks/useLayoutDirection";
+import Navbar from "@/components/Navbar";
+
+interface FormData {
+  username: string;
+  password: string;
+  email: string;
+  given_name: string;
+  family_name: string;
+  phone_number: string;
+  picture: string;
+}
+
+interface FormErrors {
+  username: string;
+  password: string;
+  email: string;
+  given_name: string;
+  family_name: string;
+  phone_number: string;
+  general: string;
+}
 
 export default function SignUp() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     username: "",
     password: "",
     email: "",
@@ -24,7 +44,7 @@ export default function SignUp() {
     picture: "",
   });
 
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<FormErrors>({
     username: "",
     password: "",
     email: "",
@@ -35,12 +55,14 @@ export default function SignUp() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const { t } = useTranslation();
+  const { isRTL } = useLayoutDirection();
   const router = useRouter();
   const { signUp } = useAuth();
 
   const validateForm = () => {
     let isValid = true;
-    const newErrors = {
+    const newErrors: FormErrors = {
       username: "",
       password: "",
       email: "",
@@ -52,43 +74,43 @@ export default function SignUp() {
 
     // Username validation
     if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
+      newErrors.username = "required";
       isValid = false;
     }
 
     // Email validation
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = "required";
       isValid = false;
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = "invalid";
       isValid = false;
     }
 
     // Password validation
     if (!formData.password) {
-      newErrors.password = "Password is required";
+      newErrors.password = "required";
       isValid = false;
     } else if (formData.password.length < 8) {
-      newErrors.password = "Password must be at least 8 characters long";
+      newErrors.password = "tooShort";
       isValid = false;
     }
 
     // First Name validation
     if (!formData.given_name.trim()) {
-      newErrors.given_name = "First name is required";
+      newErrors.given_name = "required";
       isValid = false;
     }
 
     // Last Name validation
     if (!formData.family_name.trim()) {
-      newErrors.family_name = "Last name is required";
+      newErrors.family_name = "required";
       isValid = false;
     }
 
     // Phone Number validation
     if (!formData.phone_number.trim()) {
-      newErrors.phone_number = "Phone number is required";
+      newErrors.phone_number = "required";
       isValid = false;
     }
 
@@ -113,14 +135,14 @@ export default function SignUp() {
     } catch (error: any) {
       setErrors((prev) => ({
         ...prev,
-        general: error.message,
+        general: "error", // Using translation key
       }));
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
@@ -128,120 +150,199 @@ export default function SignUp() {
   };
 
   const renderInput = (
-    field: string,
+    field: keyof FormData,
     label: string,
     placeholder: string,
     options: any = {}
   ) => (
     <View style={{ marginBottom: 20 }}>
-      <Text className="text-sm font-medium text-gray-700 mb-1">{label}*</Text>
+      <Text
+        className={`text-sm font-medium text-gray-700 mb-1 ${
+          isRTL ? "text-right" : "text-left"
+        }`}
+      >
+        {label}*
+      </Text>
       <TextInput
-        style={{ marginTop: 5 }}
         className={`w-full h-12 px-4 border rounded-lg bg-white ${
           errors[field] ? "border-red-500" : "border-gray-300"
         }`}
         placeholder={placeholder}
+        placeholderTextColor="#9CA3AF"
         value={formData[field]}
         onChangeText={(text) => handleInputChange(field, text)}
         editable={!isLoading}
         {...options}
       />
       {errors[field] ? (
-        <Text className="text-red-500 text-sm mt-1">{errors[field]}</Text>
+        <Text
+          className={`text-red-500 text-sm mt-1 ${
+            isRTL ? "text-right" : "text-left"
+          }`}
+        >
+          {t(`validation.${field}.${errors[field]}`)}
+        </Text>
       ) : null}
     </View>
   );
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className="flex-1 bg-white"
-    >
-      <StatusBar style="dark" />
+    <View className="flex-1 bg-white">
+      <Navbar />
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingTop: 100,
-          paddingBottom: 20,
-        }}
-        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1 }}
+        showsVerticalScrollIndicator={false}
       >
-        <View className="flex-1 px-6">
-          {/* Header */}
-          <View className="mb-8">
-            <Text className="text-3xl font-bold text-dark mb-2">
-              Create Account
-            </Text>
-            <Text className="text-base text-gray-500">
-              Sign up to get started
-            </Text>
-          </View>
+        <View className="flex-1 px-6 py-6">
+          <View className="w-full max-w-sm mx-auto">
+            {/* Header */}
+            <View className={`mb-8 ${isRTL ? "items-end" : "items-start"}`}>
+              <Text
+                className={`text-3xl font-bold text-gray-800 mb-2 ${
+                  isRTL ? "text-right" : "text-left"
+                } w-full`}
+              >
+                {t("signUp.createAccount")}
+              </Text>
+              <Text
+                className={`text-base text-gray-500 ${
+                  isRTL ? "text-right" : "text-left"
+                } w-full`}
+              >
+                {t("signUp.getStarted")}
+              </Text>
+            </View>
 
-          {/* General Error Message */}
-          {errors.general ? (
-            <Text className="text-red-500 text-sm mb-4">{errors.general}</Text>
-          ) : null}
-
-          {/* Form */}
-          <View className="space-y-4">
-            {renderInput("username", "Username", "Choose a username", {
-              autoCapitalize: "none",
-            })}
-
-            {renderInput("email", "Email", "Enter your email", {
-              keyboardType: "email-address",
-              autoCapitalize: "none",
-            })}
-
-            {renderInput("password", "Password", "Create a password", {
-              secureTextEntry: true,
-            })}
-
-            {renderInput("given_name", "First Name", "Enter your first name")}
-
-            {renderInput("family_name", "Last Name", "Enter your last name")}
-
-            {renderInput(
-              "phone_number",
-              "Phone Number",
-              "Enter your phone number",
-              {
-                keyboardType: "phone-pad",
-              }
-            )}
-
-            {/* Sign Up Button */}
-            <TouchableOpacity
-              style={{ marginTop: 20 }}
-              className={`h-12 rounded-lg justify-center items-center ${
-                isLoading ? "bg-primary/70" : "bg-primary"
-              }`}
-              onPress={handleSignUp}
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text className="text-white font-semibold text-base">
-                  Sign Up
+            {/* Form */}
+            <View className="space-y-4 w-full">
+              {errors.general ? (
+                <Text
+                  className={`text-red-500 text-sm mb-4 ${
+                    isRTL ? "text-right" : "text-left"
+                  } w-full`}
+                >
+                  {t("validation.general.error")}
                 </Text>
-              )}
-            </TouchableOpacity>
+              ) : null}
 
-            {/* Sign In Link */}
-            <TouchableOpacity
-              style={{ marginTop: 20 }}
-              className="flex-row justify-center items-center py-4"
-              onPress={() => router.push("/sign-in")}
-              disabled={isLoading}
-            >
-              <Text className="text-gray-600">Already have an account? </Text>
-              <Text className="text-primary font-semibold">Sign In</Text>
-            </TouchableOpacity>
+              {renderInput(
+                "username",
+                t("signUp.username"),
+                t("signUp.enterUsername"),
+                {
+                  autoCapitalize: "none",
+                  style: {
+                    marginTop: 5,
+                    textAlign: isRTL ? "right" : "left",
+                    writingDirection: isRTL ? "rtl" : "ltr",
+                  },
+                }
+              )}
+
+              {renderInput("email", t("signUp.email"), t("signUp.enterEmail"), {
+                keyboardType: "email-address",
+                autoCapitalize: "none",
+                style: {
+                  marginTop: 5,
+                  textAlign: isRTL ? "right" : "left",
+                  writingDirection: isRTL ? "rtl" : "ltr",
+                },
+              })}
+
+              {renderInput(
+                "password",
+                t("signUp.password"),
+                t("signUp.createPassword"),
+                {
+                  secureTextEntry: true,
+                  style: {
+                    marginTop: 5,
+                    textAlign: isRTL ? "right" : "left",
+                    writingDirection: isRTL ? "rtl" : "ltr",
+                  },
+                }
+              )}
+
+              {renderInput(
+                "given_name",
+                t("signUp.firstName"),
+                t("signUp.enterFirstName"),
+                {
+                  style: {
+                    marginTop: 5,
+                    textAlign: isRTL ? "right" : "left",
+                    writingDirection: isRTL ? "rtl" : "ltr",
+                  },
+                }
+              )}
+
+              {renderInput(
+                "family_name",
+                t("signUp.lastName"),
+                t("signUp.enterLastName"),
+                {
+                  style: {
+                    marginTop: 5,
+                    textAlign: isRTL ? "right" : "left",
+                    writingDirection: isRTL ? "rtl" : "ltr",
+                  },
+                }
+              )}
+
+              {renderInput(
+                "phone_number",
+                t("signUp.phoneNumber"),
+                t("signUp.enterPhoneNumber"),
+                {
+                  keyboardType: "phone-pad",
+                  style: {
+                    marginTop: 5,
+                    textAlign: isRTL ? "right" : "left",
+                    writingDirection: isRTL ? "rtl" : "ltr",
+                  },
+                }
+              )}
+
+              {/* Sign Up Button */}
+              <TouchableOpacity
+                className={`w-full h-12 rounded-lg justify-center items-center mt-6 ${
+                  isLoading ? "bg-primary/70" : "bg-primary"
+                }`}
+                onPress={handleSignUp}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text className="text-white font-semibold text-base">
+                    {t("signUp.signUp")}
+                  </Text>
+                )}
+              </TouchableOpacity>
+
+              {/* Sign In Link */}
+              <View
+                className={`flex-row justify-center items-center mt-6 mb-6 ${
+                  isRTL ? "flex-row-reverse" : ""
+                }`}
+              >
+                <Text className="text-gray-600">
+                  {t("signUp.alreadyHaveAccount")}{" "}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => router.push("/(auth)/sign-in")}
+                  disabled={isLoading}
+                >
+                  <Text className="text-primary font-semibold">
+                    {t("signUp.signIn")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </View>
   );
 }
