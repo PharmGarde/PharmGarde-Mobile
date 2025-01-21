@@ -1,5 +1,4 @@
 
-// NearbyPlaces.tsx
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -14,26 +13,10 @@ import {
   ScrollView,
 } from 'react-native';
 import * as Location from 'expo-location';
-import { calculateDistance, callPharmacy } from '@/hooks/helpers/calculateDistance';
+import { calculateDistance, callPharmacy } from '@/helpers/calculateDistance';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapViewComponent from '@/components/ui/MapViewComponent';
-
-type Coordinates = {
-  latitude: number;
-  longitude: number;
-};
-
-type Pharmacy = {
-  id: string;
-  name: string;
-  address: string;
-  image: any;
-  latitude: number;
-  longitude: number;
-  isOnDuty: boolean;
-  openingHours: string;
-  phoneNumber: string;
-};
+import { Coordinates, Pharmacy } from '@/types/types';
 
 const YOUSSOUFIA_COORDS: Coordinates = {
   latitude: 32.2460,
@@ -50,18 +33,18 @@ const PHARMACIES: Pharmacy[] = [
     longitude: -8.5298,
     isOnDuty: true,
     openingHours: '24/7',
-    phoneNumber: '+212522334455'
+    phoneNumber: '+212522334455',
   },
   {
     id: '2',
-    name: 'Pharmacy Al Massira', 
+    name: 'Pharmacy Al Massira',
     address: '45 Rue Mohammed V, Youssoufia',
     image: require('../../assets/images/icon.png'),
     latitude: 32.2463,
     longitude: -8.5205,
     isOnDuty: false,
     openingHours: '9:00 - 21:00',
-    phoneNumber: '+212522334456'
+    phoneNumber: '+212522334456',
   },
 ];
 
@@ -71,6 +54,7 @@ const NearbyPlaces = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showOnlyOnDuty, setShowOnlyOnDuty] = useState(false);
+  const [selectedPharmacy, setSelectedPharmacy] = useState<Pharmacy | null>(null); // Track selected pharmacy
 
   useEffect(() => {
     const getLocation = async () => {
@@ -81,7 +65,6 @@ const NearbyPlaces = () => {
           setIsLoading(false);
           return;
         }
-
         const location = await Location.getCurrentPositionAsync({});
         setCurrentLocation({
           latitude: location.coords.latitude,
@@ -97,58 +80,77 @@ const NearbyPlaces = () => {
     getLocation();
   }, []);
 
+  // Automatically detect the nearest pharmacy
+  useEffect(() => {
+    if (currentLocation) {
+      const pharmaciesWithDistance = PHARMACIES.map((pharmacy) => {
+        const distance = calculateDistance(
+          currentLocation.latitude,
+          currentLocation.longitude,
+          pharmacy.latitude,
+          pharmacy.longitude
+        );
+        return { ...pharmacy, distance };
+      });
+
+      // Sort pharmacies by distance
+      const sortedPharmacies = pharmaciesWithDistance.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+
+      // Set the nearest pharmacy as the default selected pharmacy
+      if (sortedPharmacies.length > 0) {
+        setSelectedPharmacy(sortedPharmacies[0]);
+      }
+    }
+  }, [currentLocation]);
+
+  // Filter and sort pharmacies by distance
   const filteredPharmacies = PHARMACIES.filter((pharmacy) => 
     pharmacy.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (!showOnlyOnDuty || pharmacy.isOnDuty)
-  );
+  ).map((pharmacy) => {
+    const distance = currentLocation
+      ? calculateDistance(
+          currentLocation.latitude,
+          currentLocation.longitude,
+          pharmacy.latitude,
+          pharmacy.longitude
+        )
+      : null;
+    return { ...pharmacy, distance };
+  }).sort((a, b) => (a.distance || 0) - (b.distance || 0)); // Sort by distance
 
-  const openMapsWithDirections = async (pharmacy: Pharmacy) => {
-    const destination = `${pharmacy.latitude},${pharmacy.longitude}`;
-    const url = Platform.select({
-      ios: `maps://app?saddr=Current+Location&daddr=${destination}`,
-      android: `google.navigation:q=${destination}`
-    });
-
-    if (!url) return;
-
-    try {
-      const supported = await Linking.canOpenURL(url);
-      const finalUrl = supported ? url : `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
-      await Linking.openURL(finalUrl);
-    } catch (err) {
-      setError('Could not open maps application');
-    }
+  const handleMarkerPress = (pharmacy: Pharmacy) => {
+    setSelectedPharmacy(pharmacy); // Set selected pharmacy on marker press
   };
 
-  const renderPharmacyItem = ({ item }: { item: Pharmacy }) => (
+  const renderPharmacyItem = ({ item }: { item: Pharmacy & { distance: number | null } }) => (
     <View>
-    <TouchableOpacity 
-      className="border-b border-gray-200"
-      onPress={() => openMapsWithDirections(item)}
-    >
-      <View className="flex-row p-4 ">
-        <Image 
-          source={item.image} 
-          className="w-20 h-20 rounded-lg mr-4"
-        />
-        <View className="flex-1 justify-center">
-          <Text className="text-lg font-bold">{item.name}</Text>
-          <Text className="text-gray-600 mt-1">{item.address}</Text>
-          <Text className={`font-medium mt-1 ${
-            item.isOnDuty ? 'text-green-600' : 'text-red-600'
-          }`}>
-            {item.isOnDuty ? 'On Duty' : 'Off Duty'}
-          </Text>
-          <Text className="text-gray-600 mt-1">{item.openingHours}</Text>
-          <TouchableOpacity 
-            className="bg-green-800 p-2 rounded-lg mt-2 w-20"
-            onPress={() => callPharmacy(item.phoneNumber)}
-          >
-            <Text className="text-white text-center">Call</Text>
-          </TouchableOpacity>
+      <TouchableOpacity className="border-b border-gray-200">
+        <View className="flex-row p-4">
+          <Image source={item.image} className="w-20 h-20 rounded-lg mr-4" />
+          <View className="flex-1 justify-center">
+            <Text className="text-lg font-bold">{item.name}</Text>
+            <Text className="text-gray-600 mt-1">{item.address}</Text>
+            <Text className={`font-medium mt-1 ${
+              item.isOnDuty ? 'text-green-600' : 'text-red-600'
+            }`}>
+              {item.isOnDuty ? 'On Duty' : 'Off Duty'}
+            </Text>
+            <Text className="text-gray-600 mt-1">{item.openingHours}</Text>
+            {item.distance !== null && (
+              <Text className="text-gray-600 mt-1">
+                Distance: {item.distance.toFixed(2)} km
+              </Text>
+            )}
+            <TouchableOpacity
+              className="bg-green-800 p-2 rounded-lg mt-2 w-20"
+              onPress={() => callPharmacy(item.phoneNumber)}
+            >
+              <Text className="text-white text-center">Call</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   );
 
@@ -165,7 +167,7 @@ const NearbyPlaces = () => {
     return (
       <View className="flex-1 justify-center items-center p-4">
         <Text className="text-red-500 text-center">{error}</Text>
-        <TouchableOpacity 
+        <TouchableOpacity
           className="mt-4 bg-green-800 p-3 rounded-lg"
           onPress={() => setIsLoading(true)}
         >
@@ -177,7 +179,7 @@ const NearbyPlaces = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView  className="flex-1 bg-white ">
+      <ScrollView className="flex-1 bg-white">
         <View className="flex-1 bg-white">
           <TextInput
             className="h-10 mx-4 mt-8 px-4 border border-gray-300 rounded-lg"
@@ -199,17 +201,18 @@ const NearbyPlaces = () => {
             currentLocation={currentLocation}
             youssoufiaCoords={YOUSSOUFIA_COORDS}
             filteredPharmacies={filteredPharmacies}
-            openMapsWithDirections={openMapsWithDirections}
+            onMarkerPress={handleMarkerPress} // Pass callback
+            selectedPharmacy={selectedPharmacy} // Pass selected pharmacy
           />
-         <View className="bg-white 
-         shadow-lg rounded-lg shadow-gray-400">
-          <FlatList
-            className="flex-1"
-            data={filteredPharmacies}
-            keyExtractor={(item) => item.id}
-            renderItem={renderPharmacyItem}
-          />
-          </View> 
+
+          <View className="bg-white shadow-lg rounded-lg shadow-gray-400">
+            <FlatList
+              className="flex-1"
+              data={filteredPharmacies}
+              keyExtractor={(item) => item.id}
+              renderItem={renderPharmacyItem}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
