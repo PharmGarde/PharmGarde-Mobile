@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "PharmGarde-Mobile",
-    "slug": "PharmGarde-Mobile",
+    "name": "PharmGarde",
+    "slug": "PharmGarde",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/logo-pharmacy.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,24 +13,41 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/logo-pharmacy.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/logo-pharmacy.png"
+    },
+    "splash": {
+      "image": "./assets/images/logo-pharmacy.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
+          "image": "./assets/images/logo-pharmacy.png",
+          "resizeMode": "cover",
           "backgroundColor": "#ffffff"
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts":[
+            "./assets/fonts/Rubik-Bold.ttf",
+            "./assets/fonts/Rubik-Medium.ttf",
+            "./assets/fonts/Rubik-Regular.ttf",
+            "./assets/fonts/Rubik-SemiBold.ttf",
+            "./assets/fonts/Rubik-Light.ttf",
+            "./assets/fonts/Rubik-ExtraBold.ttf"
+          ]
         }
       ]
     ],
