@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -19,13 +18,41 @@ export default function SignIn() {
     username: "",
     password: "",
   });
+  const [errors, setErrors] = useState({
+    username: "",
+    password: "",
+    general: "",
+  });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { signIn } = useAuth();
 
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      username: "",
+      password: "",
+      general: "",
+    };
+
+    // Username validation
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+      isValid = false;
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSignIn = async () => {
-    if (!formData.username || !formData.password) {
-      Alert.alert("Error", "Please fill in all fields");
+    if (!validateForm()) {
       return;
     }
 
@@ -34,7 +61,10 @@ export default function SignIn() {
       await signIn(formData.username, formData.password);
       router.replace("/(app)/home");
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      setErrors((prev) => ({
+        ...prev,
+        general: error.message,
+      }));
     } finally {
       setIsLoading(false);
     }
@@ -62,21 +92,38 @@ export default function SignIn() {
 
           {/* Form */}
           <View className="space-y-4">
+            {/* General Error Message */}
+            {errors.general ? (
+              <Text className="text-red-500 text-md mb-5">
+                {errors.general}
+              </Text>
+            ) : null}
+
             <View>
               <Text className="text-sm font-medium text-gray-700 mb-1">
                 Username
               </Text>
               <TextInput
                 style={{ marginTop: 5 }}
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
+                className={`w-full h-12 px-4 border rounded-lg bg-white ${
+                  errors.username ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Enter your username"
                 value={formData.username}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, username: text }))
-                }
+                onChangeText={(text) => {
+                  setFormData((prev) => ({ ...prev, username: text }));
+                  if (errors.username) {
+                    setErrors((prev) => ({ ...prev, username: "" }));
+                  }
+                }}
                 autoCapitalize="none"
                 editable={!isLoading}
               />
+              {errors.username ? (
+                <Text className="text-red-500 text-sm mt-1">
+                  {errors.username}
+                </Text>
+              ) : null}
             </View>
 
             <View style={{ marginTop: 20 }}>
@@ -85,26 +132,26 @@ export default function SignIn() {
               </Text>
               <TextInput
                 style={{ marginTop: 5 }}
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
+                className={`w-full h-12 px-4 border rounded-lg bg-white ${
+                  errors.password ? "border-red-500" : "border-gray-300"
+                }`}
                 placeholder="Enter your password"
                 value={formData.password}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, password: text }))
-                }
+                onChangeText={(text) => {
+                  setFormData((prev) => ({ ...prev, password: text }));
+                  if (errors.password) {
+                    setErrors((prev) => ({ ...prev, password: "" }));
+                  }
+                }}
                 secureTextEntry
                 editable={!isLoading}
               />
+              {errors.password ? (
+                <Text className="text-red-500 text-sm mt-1">
+                  {errors.password}
+                </Text>
+              ) : null}
             </View>
-
-            {/* Forgot Password */}
-            {/* <TouchableOpacity
-              className="self-end"
-              onPress={() => router.push('/forgot-password')}
-            >
-              <Text className="text-primary font-medium">
-                Forgot Password?
-              </Text>
-            </TouchableOpacity> */}
 
             {/* Sign In Button */}
             <TouchableOpacity

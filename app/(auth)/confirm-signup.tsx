@@ -1,42 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { authService } from '../../auth/authService';
-import { StatusBar } from 'expo-status-bar';
+} from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { authService } from "../../auth/authService";
+import { StatusBar } from "expo-status-bar";
 
 export default function ConfirmSignUp() {
-  const [code, setCode] = useState('');
+  const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const { username } = useLocalSearchParams();
   const router = useRouter();
 
+  const validateCode = () => {
+    if (!code.trim()) {
+      setError("Please enter the verification code");
+      return false;
+    }
+    setError("");
+    return true;
+  };
+
   const handleConfirm = async () => {
-    if (!code) {
-      Alert.alert('Error', 'Please enter the verification code');
+    if (!validateCode()) {
       return;
     }
 
     setIsLoading(true);
+    setError("");
+    setSuccessMessage("");
+
     try {
       await authService.confirmSignUp(username as string, code);
-      Alert.alert('Success', 'Account confirmed successfully', [
-        {
-          text: 'OK',
-          onPress: () => router.push('/sign-in'),
-        },
-      ]);
+      setSuccessMessage("Account confirmed successfully");
+      setTimeout(() => {
+        router.push("/sign-in");
+      }, 1500);
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      setError(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -44,11 +54,14 @@ export default function ConfirmSignUp() {
 
   const handleResendCode = async () => {
     setIsResending(true);
+    setError("");
+    setSuccessMessage("");
+
     try {
       await authService.resendConfirmationCode(username as string);
-      Alert.alert('Success', 'Verification code has been resent');
+      setSuccessMessage("Verification code has been resent");
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      setError(error.message);
     } finally {
       setIsResending(false);
     }
@@ -56,13 +69,13 @@ export default function ConfirmSignUp() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-white"
     >
       <StatusBar style="dark" />
       <View className="flex-1 px-6 justify-center">
         {/* Header */}
-        <View className="mb-8">
+        <View className="mb-8" style={{ alignItems: "center" }}>
           <Text className="text-3xl font-bold text-dark mb-2">
             Verify Account
           </Text>
@@ -73,24 +86,47 @@ export default function ConfirmSignUp() {
 
         {/* Form */}
         <View className="space-y-4">
-          <View>
-            <Text className="text-sm font-medium text-gray-700 mb-1">
+          {/* Error Message */}
+          {error ? (
+            <Text className="text-red-500 text-md text-center mb-4">
+              {error}
+            </Text>
+          ) : null}
+
+          {/* Success Message */}
+          {successMessage ? (
+            <Text className="text-green-500 text-sm text-center mb-2">
+              {successMessage}
+            </Text>
+          ) : null}
+
+          <View style={{ marginBottom: 20 }}>
+            <Text className="text-sm font-medium text-gray-700 mb-4">
               Verification Code
             </Text>
             <TextInput
-              className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
+              className={`w-full h-12 px-4 border rounded-lg bg-white ${
+                error ? "border-red-500" : "border-gray-300"
+              }`}
               placeholder="Enter verification code"
               value={code}
-              onChangeText={setCode}
+              onChangeText={(text) => {
+                setCode(text);
+                if (error) setError("");
+                if (successMessage) setSuccessMessage("");
+              }}
               keyboardType="number-pad"
               editable={!isLoading}
             />
+            {error ? (
+              <Text className="text-red-500 text-sm mt-1">{error}</Text>
+            ) : null}
           </View>
 
           {/* Confirm Button */}
           <TouchableOpacity
             className={`h-12 rounded-lg justify-center items-center ${
-              isLoading ? 'bg-primary/70' : 'bg-primary'
+              isLoading ? "bg-primary/70" : "bg-primary"
             }`}
             onPress={handleConfirm}
             disabled={isLoading}

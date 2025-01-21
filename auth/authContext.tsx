@@ -59,6 +59,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return signInResult;
     } catch (error) {
+      console.log("error", error);
+
       throw error;
     }
   };

@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -24,13 +23,81 @@ export default function SignUp() {
     phone_number: "",
     picture: "",
   });
+
+  const [errors, setErrors] = useState({
+    username: "",
+    password: "",
+    email: "",
+    given_name: "",
+    family_name: "",
+    phone_number: "",
+    general: "",
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { signUp } = useAuth();
 
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {
+      username: "",
+      password: "",
+      email: "",
+      given_name: "",
+      family_name: "",
+      phone_number: "",
+      general: "",
+    };
+
+    // Username validation
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+      isValid = false;
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters long";
+      isValid = false;
+    }
+
+    // First Name validation
+    if (!formData.given_name.trim()) {
+      newErrors.given_name = "First name is required";
+      isValid = false;
+    }
+
+    // Last Name validation
+    if (!formData.family_name.trim()) {
+      newErrors.family_name = "Last name is required";
+      isValid = false;
+    }
+
+    // Phone Number validation
+    if (!formData.phone_number.trim()) {
+      newErrors.phone_number = "Phone number is required";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
   const handleSignUp = async () => {
-    if (!formData.username || !formData.password || !formData.email) {
-      Alert.alert("Error", "Please fill in all required fields");
+    if (!validateForm()) {
       return;
     }
 
@@ -44,11 +111,46 @@ export default function SignUp() {
         });
       }
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      setErrors((prev) => ({
+        ...prev,
+        general: error.message,
+      }));
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: "" }));
+    }
+  };
+
+  const renderInput = (
+    field: string,
+    label: string,
+    placeholder: string,
+    options: any = {}
+  ) => (
+    <View style={{ marginBottom: 20 }}>
+      <Text className="text-sm font-medium text-gray-700 mb-1">{label}*</Text>
+      <TextInput
+        style={{ marginTop: 5 }}
+        className={`w-full h-12 px-4 border rounded-lg bg-white ${
+          errors[field] ? "border-red-500" : "border-gray-300"
+        }`}
+        placeholder={placeholder}
+        value={formData[field]}
+        onChangeText={(text) => handleInputChange(field, text)}
+        editable={!isLoading}
+        {...options}
+      />
+      {errors[field] ? (
+        <Text className="text-red-500 text-sm mt-1">{errors[field]}</Text>
+      ) : null}
+    </View>
+  );
 
   return (
     <KeyboardAvoidingView
@@ -76,114 +178,38 @@ export default function SignUp() {
             </Text>
           </View>
 
+          {/* General Error Message */}
+          {errors.general ? (
+            <Text className="text-red-500 text-sm mb-4">{errors.general}</Text>
+          ) : null}
+
           {/* Form */}
           <View className="space-y-4">
-            {/* Username */}
-            <View style={{ marginBottom: 20 }}>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Username*
-              </Text>
-              <TextInput
-                style={{ marginTop: 5 }}
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
-                placeholder="Choose a username"
-                value={formData.username}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, username: text }))
-                }
-                autoCapitalize="none"
-                editable={!isLoading}
-              />
-            </View>
+            {renderInput("username", "Username", "Choose a username", {
+              autoCapitalize: "none",
+            })}
 
-            {/* Email */}
-            <View style={{ marginBottom: 20 }}>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Email*
-              </Text>
-              <TextInput
-                style={{ marginTop: 5 }}
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
-                placeholder="Enter your email"
-                value={formData.email}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, email: text }))
-                }
-                keyboardType="email-address"
-                autoCapitalize="none"
-                editable={!isLoading}
-              />
-            </View>
+            {renderInput("email", "Email", "Enter your email", {
+              keyboardType: "email-address",
+              autoCapitalize: "none",
+            })}
 
-            {/* Password */}
-            <View style={{ marginBottom: 20 }}>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Password*
-              </Text>
-              <TextInput
-                style={{ marginTop: 5 }}
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
-                placeholder="Create a password"
-                value={formData.password}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, password: text }))
-                }
-                secureTextEntry
-                editable={!isLoading}
-              />
-            </View>
+            {renderInput("password", "Password", "Create a password", {
+              secureTextEntry: true,
+            })}
 
-            {/* First Name */}
-            <View style={{ marginBottom: 20 }}>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                First Name*
-              </Text>
-              <TextInput
-                style={{ marginTop: 5 }}
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
-                placeholder="Enter your first name"
-                value={formData.given_name}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, given_name: text }))
-                }
-                editable={!isLoading}
-              />
-            </View>
+            {renderInput("given_name", "First Name", "Enter your first name")}
 
-            {/* Last Name */}
-            <View style={{ marginBottom: 20 }}>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Last Name*
-              </Text>
-              <TextInput
-                style={{ marginTop: 5 }}
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
-                placeholder="Enter your last name"
-                value={formData.family_name}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, family_name: text }))
-                }
-                editable={!isLoading}
-              />
-            </View>
+            {renderInput("family_name", "Last Name", "Enter your last name")}
 
-            {/* Phone Number */}
-            <View style={{ marginBottom: 20 }}>
-              <Text className="text-sm font-medium text-gray-700 mb-1">
-                Phone Number*
-              </Text>
-              <TextInput
-                style={{ marginTop: 5 }}
-                className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
-                placeholder="Enter your phone number"
-                value={formData.phone_number}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, phone_number: text }))
-                }
-                keyboardType="phone-pad"
-                editable={!isLoading}
-              />
-            </View>
+            {renderInput(
+              "phone_number",
+              "Phone Number",
+              "Enter your phone number",
+              {
+                keyboardType: "phone-pad",
+              }
+            )}
 
             {/* Sign Up Button */}
             <TouchableOpacity
