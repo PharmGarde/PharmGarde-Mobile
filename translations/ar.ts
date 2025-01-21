@@ -62,4 +62,16 @@ export default {
       error: "حدث خطأ. حاول مرة اخرى.",
     },
   },
+  confirmSignUp: {
+    verifyAccount: "تأكيد الحساب",
+    enterCode: "أدخل رمز التحقق المرسل إلى بريدك الإلكتروني",
+    code: "رمز التحقق",
+    enterVerificationCode: "أدخل رمز التحقق",
+    confirm: "تأكيد",
+    resendCode: "إعادة إرسال رمز التحقق",
+    required: "الرجاء إدخال رمز التحقق",
+    success: "تم تأكيد الحساب بنجاح",
+    resent: "تم إعادة إرسال رمز التحقق",
+    error: "حدث خطأ. حاول مرة اخرى.",
+  },
 };

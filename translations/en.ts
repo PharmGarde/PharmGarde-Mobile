@@ -63,4 +63,16 @@ export default {
       error: "An error occurred. Please try again.",
     },
   },
+  confirmSignUp: {
+    verifyAccount: "Verify Account",
+    enterCode: "Enter the verification code sent to your email",
+    code: "Verification Code",
+    enterVerificationCode: "Enter verification code",
+    confirm: "Confirm",
+    resendCode: "Resend verification code",
+    required: "Please enter the verification code",
+    success: "Account confirmed successfully",
+    resent: "Verification code has been resent",
+    error: "An error occurred. Please try again.",
+  },
 };

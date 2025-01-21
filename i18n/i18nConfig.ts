@@ -27,6 +27,7 @@ const LANGUAGE_DETECTOR = {
 };
 
 i18next
+  //@ts-ignore
   .use(LANGUAGE_DETECTOR)
   .use(initReactI18next)
   .init({
