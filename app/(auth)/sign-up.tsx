@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,20 +9,20 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAuth } from '../../auth/authContext';
-import { StatusBar } from 'expo-status-bar';
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../auth/authContext";
+import { StatusBar } from "expo-status-bar";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
-    email: '',
-    given_name: '',
-    family_name: '',
-    phone_number: '',
-    picture: '',
+    username: "",
+    password: "",
+    email: "",
+    given_name: "",
+    family_name: "",
+    phone_number: "",
+    picture: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -30,21 +30,21 @@ export default function SignUp() {
 
   const handleSignUp = async () => {
     if (!formData.username || !formData.password || !formData.email) {
-      Alert.alert('Error', 'Please fill in all required fields');
+      Alert.alert("Error", "Please fill in all required fields");
       return;
     }
 
     setIsLoading(true);
     try {
       const result = await signUp(formData);
-      if (result.nextStep.signUpStep === 'CONFIRM_SIGN_UP') {
+      if (result.nextStep.signUpStep === "CONFIRM_SIGN_UP") {
         router.push({
-          pathname: '/confirm-signup',
+          pathname: "/confirm-signup",
           params: { username: formData.username },
         });
       }
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Alert.alert("Error", error.message);
     } finally {
       setIsLoading(false);
     }
@@ -52,16 +52,20 @@ export default function SignUp() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-white"
     >
       <StatusBar style="dark" />
       <ScrollView
         className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingTop: 100,
+          paddingBottom: 20,
+        }}
         keyboardShouldPersistTaps="handled"
       >
-        <View className="flex-1 px-6 py-12">
+        <View className="flex-1 px-6">
           {/* Header */}
           <View className="mb-8">
             <Text className="text-3xl font-bold text-dark mb-2">
@@ -75,11 +79,12 @@ export default function SignUp() {
           {/* Form */}
           <View className="space-y-4">
             {/* Username */}
-            <View>
+            <View style={{ marginBottom: 20 }}>
               <Text className="text-sm font-medium text-gray-700 mb-1">
                 Username*
               </Text>
               <TextInput
+                style={{ marginTop: 5 }}
                 className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
                 placeholder="Choose a username"
                 value={formData.username}
@@ -92,11 +97,12 @@ export default function SignUp() {
             </View>
 
             {/* Email */}
-            <View>
+            <View style={{ marginBottom: 20 }}>
               <Text className="text-sm font-medium text-gray-700 mb-1">
                 Email*
               </Text>
               <TextInput
+                style={{ marginTop: 5 }}
                 className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
                 placeholder="Enter your email"
                 value={formData.email}
@@ -110,11 +116,12 @@ export default function SignUp() {
             </View>
 
             {/* Password */}
-            <View>
+            <View style={{ marginBottom: 20 }}>
               <Text className="text-sm font-medium text-gray-700 mb-1">
                 Password*
               </Text>
               <TextInput
+                style={{ marginTop: 5 }}
                 className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
                 placeholder="Create a password"
                 value={formData.password}
@@ -127,11 +134,12 @@ export default function SignUp() {
             </View>
 
             {/* First Name */}
-            <View>
+            <View style={{ marginBottom: 20 }}>
               <Text className="text-sm font-medium text-gray-700 mb-1">
                 First Name*
               </Text>
               <TextInput
+                style={{ marginTop: 5 }}
                 className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
                 placeholder="Enter your first name"
                 value={formData.given_name}
@@ -143,11 +151,12 @@ export default function SignUp() {
             </View>
 
             {/* Last Name */}
-            <View>
+            <View style={{ marginBottom: 20 }}>
               <Text className="text-sm font-medium text-gray-700 mb-1">
                 Last Name*
               </Text>
               <TextInput
+                style={{ marginTop: 5 }}
                 className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
                 placeholder="Enter your last name"
                 value={formData.family_name}
@@ -159,11 +168,12 @@ export default function SignUp() {
             </View>
 
             {/* Phone Number */}
-            <View>
+            <View style={{ marginBottom: 20 }}>
               <Text className="text-sm font-medium text-gray-700 mb-1">
                 Phone Number*
               </Text>
               <TextInput
+                style={{ marginTop: 5 }}
                 className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
                 placeholder="Enter your phone number"
                 value={formData.phone_number}
@@ -177,8 +187,9 @@ export default function SignUp() {
 
             {/* Sign Up Button */}
             <TouchableOpacity
-              className={`h-12 rounded-lg justify-center items-center mt-6 ${
-                isLoading ? 'bg-primary/70' : 'bg-primary'
+              style={{ marginTop: 20 }}
+              className={`h-12 rounded-lg justify-center items-center ${
+                isLoading ? "bg-primary/70" : "bg-primary"
               }`}
               onPress={handleSignUp}
               disabled={isLoading}
@@ -194,8 +205,9 @@ export default function SignUp() {
 
             {/* Sign In Link */}
             <TouchableOpacity
+              style={{ marginTop: 20 }}
               className="flex-row justify-center items-center py-4"
-              onPress={() => router.push('/sign-in')}
+              onPress={() => router.push("/sign-in")}
               disabled={isLoading}
             >
               <Text className="text-gray-600">Already have an account? </Text>

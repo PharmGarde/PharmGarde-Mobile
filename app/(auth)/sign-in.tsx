@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -9,15 +9,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-} from 'react-native';
-import { useRouter } from 'expo-router';
-import { useAuth } from '../../auth/authContext';
-import { StatusBar } from 'expo-status-bar';
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useAuth } from "../../auth/authContext";
+import { StatusBar } from "expo-status-bar";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
-    username: '',
-    password: '',
+    username: "",
+    password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -25,16 +25,16 @@ export default function SignIn() {
 
   const handleSignIn = async () => {
     if (!formData.username || !formData.password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert("Error", "Please fill in all fields");
       return;
     }
 
     setIsLoading(true);
     try {
       await signIn(formData.username, formData.password);
-      router.replace('/(app)/home');
+      router.replace("/(app)/home");
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      Alert.alert("Error", error.message);
     } finally {
       setIsLoading(false);
     }
@@ -42,7 +42,7 @@ export default function SignIn() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       className="flex-1 bg-white"
     >
       <StatusBar style="dark" />
@@ -57,9 +57,7 @@ export default function SignIn() {
             <Text className="text-3xl font-bold text-dark mb-2">
               Welcome back!
             </Text>
-            <Text className="text-base text-gray-500">
-              Sign in to continue
-            </Text>
+            <Text className="text-base text-gray-500">Sign in to continue</Text>
           </View>
 
           {/* Form */}
@@ -69,6 +67,7 @@ export default function SignIn() {
                 Username
               </Text>
               <TextInput
+                style={{ marginTop: 5 }}
                 className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
                 placeholder="Enter your username"
                 value={formData.username}
@@ -80,11 +79,12 @@ export default function SignIn() {
               />
             </View>
 
-            <View>
+            <View style={{ marginTop: 20 }}>
               <Text className="text-sm font-medium text-gray-700 mb-1">
                 Password
               </Text>
               <TextInput
+                style={{ marginTop: 5 }}
                 className="w-full h-12 px-4 border border-gray-300 rounded-lg bg-white"
                 placeholder="Enter your password"
                 value={formData.password}
@@ -108,8 +108,9 @@ export default function SignIn() {
 
             {/* Sign In Button */}
             <TouchableOpacity
+              style={{ marginTop: 20 }}
               className={`h-12 rounded-lg justify-center items-center ${
-                isLoading ? 'bg-primary/70' : 'bg-primary'
+                isLoading ? "bg-primary/70" : "bg-primary"
               }`}
               onPress={handleSignIn}
               disabled={isLoading}
@@ -126,7 +127,7 @@ export default function SignIn() {
             {/* Sign Up Link */}
             <TouchableOpacity
               className="flex-row justify-center items-center py-4"
-              onPress={() => router.push('/sign-up')}
+              onPress={() => router.push("/sign-up")}
               disabled={isLoading}
             >
               <Text className="text-gray-600">Don't have an account? </Text>
