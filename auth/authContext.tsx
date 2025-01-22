@@ -50,7 +50,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleSignIn = async (username: string, password: string) => {
     setIsLoading(true);
     try {
+      console.log("Attempting to sign in with:", username);
       const user = await authService.signIn(username, password);
+      console.log("Sign-in successful. User:", user);
       setUser(user);
       setIsAuthenticated(true);
       return user;

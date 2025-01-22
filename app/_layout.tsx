@@ -6,7 +6,8 @@ import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../i18n/i18nConfig";
-import awsConfig from "../auth/authConfig";
+import { awsConfig } from "../auth/authConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -24,7 +25,25 @@ export default function RootLayout() {
 
   // Initialize Amplify
   useEffect(() => {
-    Amplify.configure(awsConfig);
+    const configureAmplify = async () => {
+      try {
+        Amplify.configure({
+          ...awsConfig,
+          storage: AsyncStorage,
+          Logging: {
+            level: "DEBUG",
+          },
+        });
+        console.log("Amplify configured successfully");
+      } catch (error) {
+        console.error(
+          "Error configuring Amplify:",
+          JSON.stringify(error, null, 2)
+        );
+      }
+    };
+
+    configureAmplify();
   }, []);
 
   // Hide the splash screen when fonts are loaded

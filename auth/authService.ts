@@ -35,7 +35,18 @@ export const authService = {
   },
 
   signIn: async (username: string, password: string) => {
-    return amplifySignIn({ username, password });
+    try {
+      console.log("Attempting to sign in with:", username);
+      const user = await amplifySignIn({ username, password });
+      console.log("Sign-in successful. User:", user);
+      return user;
+    } catch (error) {
+      console.error(
+        "Sign-in error in authService:",
+        JSON.stringify(error, null, 2)
+      );
+      throw error;
+    }
   },
 
   signUp: async (params: {
