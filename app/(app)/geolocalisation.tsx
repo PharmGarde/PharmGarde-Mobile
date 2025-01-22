@@ -1,4 +1,6 @@
 
+
+
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -11,12 +13,14 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
+  Switch,
 } from 'react-native';
 import * as Location from 'expo-location';
 import { calculateDistance, callPharmacy } from '@/helpers/calculateDistance';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapViewComponent from '@/components/ui/MapViewComponent';
 import { Coordinates, Pharmacy } from '@/types/types';
+import { Ionicons } from '@expo/vector-icons';
 
 const YOUSSOUFIA_COORDS: Coordinates = {
   latitude: 32.2460,
@@ -80,7 +84,7 @@ const NearbyPlaces = () => {
     getLocation();
   }, []);
 
-  // Automatically detect the nearest pharmacy
+  // Calculate distances and find the nearest pharmacy
   useEffect(() => {
     if (currentLocation) {
       const pharmaciesWithDistance = PHARMACIES.map((pharmacy) => {
@@ -181,37 +185,47 @@ const NearbyPlaces = () => {
     <SafeAreaView className="flex-1 bg-white">
       <ScrollView className="flex-1 bg-white">
         <View className="flex-1 bg-white">
+          <View className="mx-4 mt-8">
+            <View className="flex-row items-center px-4 mb-4 border border-gray-300 rounded-lg h-10">
+          <Ionicons name="search" size={20} color="#666" style={{marginRight: 8}} />
           <TextInput
-            className="h-10 mx-4 mt-8 px-4 border border-gray-300 rounded-lg"
-            placeholder="Search pharmacies"
+            className="flex-1"
+            placeholder="Search pharmacies" 
             value={searchQuery}
             onChangeText={setSearchQuery}
+            scrollEnabled={false}
+            multiline={false}
+            numberOfLines={1}
           />
+        </View>
+             <View className="flex-row items-center justify-between mb-4 mx-4">
+               <Text className="text-sm font-medium text-gray-600">
+                 {showOnlyOnDuty ? 'Show On Duty Only' : 'Show All Pharmacies'}
+               </Text>
+               <Switch
+                 value={showOnlyOnDuty}
+                 onValueChange={setShowOnlyOnDuty}
+                 trackColor={{ false: "#767577", true: "#166534" }}
+                 thumbColor={showOnlyOnDuty ? "#ffffff" : "#f4f3f4"}
+               />
+             </View>
 
-          <TouchableOpacity
-            className="mx-4 mt-2 mb-4 p-3 bg-green-800 rounded-lg"
-            onPress={() => setShowOnlyOnDuty(!showOnlyOnDuty)}
-          >
-            <Text className="text-white text-center font-medium">
-              {showOnlyOnDuty ? 'Show All' : 'Show Only On Duty'}
-            </Text>
-          </TouchableOpacity>
-
-          <MapViewComponent
-            currentLocation={currentLocation}
-            youssoufiaCoords={YOUSSOUFIA_COORDS}
-            filteredPharmacies={filteredPharmacies}
-            onMarkerPress={handleMarkerPress} // Pass callback
-            selectedPharmacy={selectedPharmacy} // Pass selected pharmacy
-          />
-
-          <View className="bg-white shadow-lg rounded-lg shadow-gray-400">
-            <FlatList
-              className="flex-1"
-              data={filteredPharmacies}
-              keyExtractor={(item) => item.id}
-              renderItem={renderPharmacyItem}
+            <MapViewComponent
+              currentLocation={currentLocation}
+              youssoufiaCoords={YOUSSOUFIA_COORDS}
+              filteredPharmacies={filteredPharmacies}
+              onMarkerPress={handleMarkerPress}
+              selectedPharmacy={selectedPharmacy}
             />
+
+            <View className="bg-white shadow-lg rounded-lg shadow-gray-400">
+              <FlatList
+                className="flex-1"
+                data={filteredPharmacies}
+                keyExtractor={(item) => item.id}
+                renderItem={renderPharmacyItem}
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
