@@ -24,8 +24,8 @@ export default function SignIn() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { signIn } = useAuth(); // Use the signIn function from useAuth
-  const { t, i18n } = useTranslation();
+  const { signIn } = useAuth();
+  const { t } = useTranslation();
   const { isRTL } = useLayoutDirection();
 
   const validateForm = () => {
@@ -56,16 +56,35 @@ export default function SignIn() {
     }
 
     setIsLoading(true);
+    setErrors((prev) => ({ ...prev, general: "" })); // Clear previous errors
+
     try {
-      // Call the signIn function from useAuth
-      await signIn(formData.username, formData.password);
+      console.log("Attempting to sign in with:", formData.username);
+      const user = await signIn(formData.username, formData.password);
+      console.log("Sign-in successful:", user);
       router.replace("/(app)/home"); // Redirect to home after successful sign-in
     } catch (error: any) {
-      // Handle errors from the signIn function
-      setErrors((prev) => ({
-        ...prev,
-        general: error.message || t("signIn.unknownError"),
-      }));
+      console.error("Sign-in error:", error);
+
+      // Handle specific Cognito errors
+      let errorMessage = t("signIn.unknownError");
+      if (error.code) {
+        switch (error.code) {
+          case "UserNotFoundException":
+            errorMessage = t("signIn.userNotFound");
+            break;
+          case "NotAuthorizedException":
+            errorMessage = t("signIn.invalidCredentials");
+            break;
+          case "UserNotConfirmedException":
+            errorMessage = t("signIn.userNotConfirmed");
+            break;
+          default:
+            errorMessage = error.message || t("signIn.unknownError");
+        }
+      }
+
+      setErrors((prev) => ({ ...prev, general: errorMessage }));
     } finally {
       setIsLoading(false);
     }

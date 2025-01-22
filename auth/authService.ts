@@ -5,8 +5,8 @@ import {
   resendSignUpCode,
   signIn as amplifySignIn,
   signUp as amplifySignUp,
-  type SignInInput,
-  type SignUpInput,
+  getCurrentUser,
+  signOut as amplifySignOut,
 } from "@aws-amplify/auth";
 
 export const authService = {
@@ -58,5 +58,13 @@ export const authService = {
         },
       },
     });
+  },
+
+  getCurrentUser: async () => {
+    return getCurrentUser();
+  },
+
+  signOut: async () => {
+    return amplifySignOut();
   },
 };

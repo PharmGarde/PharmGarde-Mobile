@@ -1,12 +1,16 @@
-// @ts-nocheck
-import { ResourcesConfig } from '@aws-amplify/core';
-
-export const awsConfig: ResourcesConfig = {
+const awsConfig = {
   Auth: {
-    Cognito: {
-      userPoolId: process.env.EXPO_PUBLIC_USER_POOL_ID || '',
-      userPoolClientId: process.env.EXPO_PUBLIC_USER_POOL_CLIENT_ID || '',
-      region: process.env.EXPO_PUBLIC_AWS_REGION || ''
-    }
-  }
+    region: "eu-north-1",
+    userPoolId: "eu-north-1_JGjhRBUsH", // Replace with your User Pool ID
+    userPoolWebClientId: "raagmk5k89akn3hem7ilshji6", // Replace with your App Client ID
+    oauth: {
+      domain: "your-cognito-domain.auth.eu-north-1.amazoncognito.com", // Replace with your Cognito domain
+      scope: ["email", "openid", "profile"],
+      redirectSignIn: "myapp://callback", // Replace with your custom scheme
+      redirectSignOut: "myapp://signout", // Replace with your custom scheme
+      responseType: "code", // Authorization Code Grant
+    },
+  },
 };
+
+export default awsConfig;

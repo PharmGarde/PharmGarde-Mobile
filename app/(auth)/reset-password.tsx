@@ -17,13 +17,13 @@ import Navbar from "@/components/Navbar";
 export default function ResetPassword() {
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState(""); // Add confirmPassword field
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { username } = useLocalSearchParams();
   const router = useRouter();
-  const { resetPassword } = useAuth(); // Use resetPassword from useAuth
+  const { resetPassword } = useAuth();
   const { t } = useTranslation();
   const { isRTL } = useLayoutDirection();
 

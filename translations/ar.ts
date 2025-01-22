@@ -99,6 +99,8 @@ export default {
     enterCode: "أدخل رمز إعادة التعيين",
     newPassword: "كلمة المرور الجديدة",
     enterNewPassword: "أدخل كلمة المرور الجديدة",
+    confirmPassword: "تأكيد كلمة المرور",
+    confirmNewPassword: "تأكيد أنشاء كلمة المرور",
     submit: "إعادة تعيين كلمة المرور",
     required: "جميع الحقول مطلوبة",
     passwordTooShort: "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
