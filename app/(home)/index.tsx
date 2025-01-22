@@ -7,7 +7,7 @@ import Filtrage from '@/components/Home/Filtrage'
 
 function Home() {
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-[#007f5f]">
       <SafeAreaView>
         <Navbar />
         {/* <View className="items-center px-5 py-4">

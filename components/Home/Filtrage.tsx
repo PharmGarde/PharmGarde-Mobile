@@ -22,9 +22,8 @@ export default function Filtrage() {
     useEffect(() => {
         async function specialShift() {
             try {
-                let results = await axios.get(`http://localhost:3000/pharmacy`);
+                let results = await axios.get(`http://192.168.0.131:3000/pharmacy`);
                 if (results?.data) {
-                    console.log('resssssssssults', results?.data);
                     for (let i = 0; i < results.data.length; i++) {
                         if (results.data[i].weekendshift == true) {
                             // console.log('yeyyeyeye', results.data[i]);
@@ -42,11 +41,7 @@ export default function Filtrage() {
         }
         specialShift();
     }, [])
-
     // console.log('check the state', weekendShiftData);
-
-
-
     return (
         <View className="w-full bg-[#007f5f] p-4 rounded-md ">
             <Text className='text-white font-rubik-bold text-center text-xl'>Let dive to the Duty pharmacies</Text>
@@ -96,16 +91,20 @@ export default function Filtrage() {
             )}
             {selectedOption == "weekend" && (
                 <>
-                    {weekendShiftData ? (
+                    {weekendShiftData.length > 0 ? (
+                        <>
+                            <View>
+                                <FlatList
+                                    data={weekendShiftData}
+                                    renderItem={({ item }) => <CardPharmacy dataPharmacy={item} />}
+                                    keyExtractor={item => item._id}
+                                />
+                            </View>
+                        </>
+                    ) : (
                         <View className='bg-gray-200 mt-5 py-6 rounded-lg'>
                             <Text className='font-rubik-bold text-center flex justify-center items-center'>
-                                No weekend shift available
-                            </Text>
-                        </View>
-                    ) : (
-                        <View className='bg-gray-200'>
-                            <Text>
-                                No weekend shift available
+                                No weekend shift availableee
                             </Text>
                         </View>
 
@@ -114,16 +113,20 @@ export default function Filtrage() {
             )}
             {selectedOption == "night" && (
                 <>
-                    {nightShiftData ? (
+                    {nightShiftData.length > 0 ? (
+                        <>
+                            <View>
+                                <FlatList
+                                    data={nightShiftData}
+                                    renderItem={({ item }) => <CardPharmacy dataPharmacy={item} />}
+                                    keyExtractor={item => item._id} />
+                            </View>
+                        </>
+                    ) : (
                         <View className='bg-gray-200 mt-5 py-6 rounded-lg'>
                             <Text className='font-rubik-bold text-center flex justify-center items-center'>
-                                Available
-                            </Text>
-                        </View>
-                    ) : (
-                        <View className='bg-gray-200'>
-                            <Text>
                                 No night shift available
+
                             </Text>
                         </View>
 
