@@ -22,7 +22,7 @@ export default function Filtrage() {
     useEffect(() => {
         async function specialShift() {
             try {
-                let results = await axios.get(`http://172.16.10.212:3000/pharmacy`);
+                let results = await axios.get(`http://192.168.0.131:3000/pharmacy`);
                 if (results?.data) {
                     for (let i = 0; i < results.data.length; i++) {
                         if (results.data[i].weekendshift == true) {

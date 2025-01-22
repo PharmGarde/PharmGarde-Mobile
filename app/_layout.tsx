@@ -6,6 +6,8 @@ import { AuthProvider } from '../auth/authContext';
 import { awsConfig } from '../auth/authConfig';
 import { useEffect } from 'react';
 import { useFonts } from 'expo-font';
+import {NavigationContainer} from '@react-navigation/native';
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -39,7 +41,8 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(home)" />
+        <Stack.Screen name="(home)/index" />
+        <Stack.Screen name="DetailsPage" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(app)" />
         <Stack.Screen name="index" options={{ headerShown: false }} />
