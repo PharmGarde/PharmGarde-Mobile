@@ -1,4 +1,3 @@
-// app/(auth)/reset-password.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -18,17 +17,19 @@ import Navbar from "@/components/Navbar";
 export default function ResetPassword() {
   const [code, setCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // Add confirmPassword field
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const { username } = useLocalSearchParams();
   const router = useRouter();
-  const { resetPassword } = useAuth();
+  const { resetPassword } = useAuth(); // Use resetPassword from useAuth
   const { t } = useTranslation();
   const { isRTL } = useLayoutDirection();
 
   const handleSubmit = async () => {
-    if (!code.trim() || !newPassword.trim()) {
+    // Validate fields
+    if (!code.trim() || !newPassword.trim() || !confirmPassword.trim()) {
       setError("required");
       return;
     }
@@ -38,18 +39,27 @@ export default function ResetPassword() {
       return;
     }
 
+    if (newPassword !== confirmPassword) {
+      setError("passwordMismatch");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
     setSuccessMessage("");
 
     try {
+      // Call resetPassword from useAuth
       await resetPassword(username as string, code, newPassword);
       setSuccessMessage("success");
+
+      // Redirect to sign-in after a short delay
       setTimeout(() => {
         router.push("/sign-in");
       }, 1500);
     } catch (error: any) {
       setError("error");
+      console.error("Reset password error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -84,6 +94,7 @@ export default function ResetPassword() {
 
             {/* Form */}
             <View className="space-y-4 w-full">
+              {/* Error Message */}
               {error && (
                 <Text
                   className={`text-red-500 text-sm mb-4 ${
@@ -94,6 +105,7 @@ export default function ResetPassword() {
                 </Text>
               )}
 
+              {/* Success Message */}
               {successMessage && (
                 <Text
                   className={`text-green-500 text-sm mb-4 ${
@@ -104,9 +116,10 @@ export default function ResetPassword() {
                 </Text>
               )}
 
+              {/* Verification Code Input */}
               <View>
                 <Text
-                  className={`text-sm font-medium text-gray-700 mb-1 ${
+                  className={`text-sm font-medium text-gray-700 mb-2 ${
                     isRTL ? "text-right" : "text-left"
                   }`}
                 >
@@ -132,9 +145,10 @@ export default function ResetPassword() {
                 />
               </View>
 
+              {/* New Password Input */}
               <View>
                 <Text
-                  className={`text-sm font-medium text-gray-700 mb-1 ${
+                  className={`text-sm font-medium text-gray-700 mt-5 mb-2 ${
                     isRTL ? "text-right" : "text-left"
                   }`}
                 >
@@ -160,6 +174,36 @@ export default function ResetPassword() {
                 />
               </View>
 
+              {/* Confirm Password Input */}
+              <View>
+                <Text
+                  className={`text-sm font-medium text-gray-700 mt-5 mb-2 ${
+                    isRTL ? "text-right" : "text-left"
+                  }`}
+                >
+                  {t("resetPassword.confirmPassword")}*
+                </Text>
+                <TextInput
+                  className={`w-full h-12 px-4 border rounded-lg bg-white ${
+                    error ? "border-red-500" : "border-gray-300"
+                  }`}
+                  placeholder={t("resetPassword.confirmNewPassword")}
+                  placeholderTextColor="#9CA3AF"
+                  value={confirmPassword}
+                  onChangeText={(text) => {
+                    setConfirmPassword(text);
+                    if (error) setError("");
+                  }}
+                  secureTextEntry
+                  editable={!isLoading}
+                  style={{
+                    textAlign: isRTL ? "right" : "left",
+                    writingDirection: isRTL ? "rtl" : "ltr",
+                  }}
+                />
+              </View>
+
+              {/* Submit Button */}
               <TouchableOpacity
                 className={`w-full h-12 rounded-lg justify-center items-center mt-6 ${
                   isLoading ? "bg-primary/70" : "bg-primary"

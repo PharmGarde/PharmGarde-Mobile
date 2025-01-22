@@ -24,7 +24,7 @@ export default function SignIn() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { signIn } = useAuth(); // Use the signIn function from useAuth
   const { t, i18n } = useTranslation();
   const { isRTL } = useLayoutDirection();
 
@@ -57,12 +57,14 @@ export default function SignIn() {
 
     setIsLoading(true);
     try {
+      // Call the signIn function from useAuth
       await signIn(formData.username, formData.password);
-      router.replace("/(app)/home");
+      router.replace("/(app)/home"); // Redirect to home after successful sign-in
     } catch (error: any) {
+      // Handle errors from the signIn function
       setErrors((prev) => ({
         ...prev,
-        general: error.message,
+        general: error.message || t("signIn.unknownError"),
       }));
     } finally {
       setIsLoading(false);
@@ -73,11 +75,7 @@ export default function SignIn() {
     <View className="flex-1 bg-white">
       <Navbar />
       <View className="flex-1 px-6 justify-center">
-        {" "}
-        {/* Added justify-center here */}
         <View className="w-full max-w-sm mx-auto">
-          {" "}
-          {/* Added container for form */}
           {/* Header */}
           <View className={`mb-8 ${isRTL ? "items-end" : "items-start"}`}>
             <Text
@@ -95,6 +93,7 @@ export default function SignIn() {
               {t("signIn.signInToContinue")}
             </Text>
           </View>
+
           {/* Form */}
           <View className="space-y-4 w-full">
             {/* General Error Message */}

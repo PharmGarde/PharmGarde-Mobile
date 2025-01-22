@@ -1,4 +1,3 @@
-// app/(auth)/forgot-password.tsx
 import React, { useState } from "react";
 import {
   View,
@@ -21,7 +20,7 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const router = useRouter();
-  const { forgotPassword } = useAuth();
+  const { forgotPassword } = useAuth(); // Use forgotPassword from useAuth
   const { t } = useTranslation();
   const { isRTL } = useLayoutDirection();
 
@@ -36,14 +35,18 @@ export default function ForgotPassword() {
     setSuccessMessage("");
 
     try {
+      // Call forgotPassword from useAuth
       await forgotPassword(username);
       setSuccessMessage("success");
+
+      // Redirect to reset-password page with the username as a parameter
       router.push({
         pathname: "/reset-password",
         params: { username },
       });
     } catch (error: any) {
       setError("error");
+      console.error("Forgot password error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -78,6 +81,7 @@ export default function ForgotPassword() {
 
             {/* Form */}
             <View className="space-y-4 w-full">
+              {/* Error Message */}
               {error && (
                 <Text
                   className={`text-red-500 text-sm mb-4 ${
@@ -88,6 +92,7 @@ export default function ForgotPassword() {
                 </Text>
               )}
 
+              {/* Success Message */}
               {successMessage && (
                 <Text
                   className={`text-green-500 text-sm mb-4 ${
@@ -98,6 +103,7 @@ export default function ForgotPassword() {
                 </Text>
               )}
 
+              {/* Username Input */}
               <View>
                 <Text
                   className={`text-sm font-medium text-gray-700 mb-1 ${
@@ -125,6 +131,7 @@ export default function ForgotPassword() {
                 />
               </View>
 
+              {/* Submit Button */}
               <TouchableOpacity
                 className={`w-full h-12 rounded-lg justify-center items-center mt-6 ${
                   isLoading ? "bg-primary/70" : "bg-primary"
@@ -141,9 +148,10 @@ export default function ForgotPassword() {
                 )}
               </TouchableOpacity>
 
+              {/* Back to Sign In Link */}
               <TouchableOpacity
                 className="flex-row justify-center items-center py-4"
-                onPress={() => router.back()}
+                onPress={() => router.push("/(auth)/sign-in")}
                 disabled={isLoading}
               >
                 <Text className="text-primary font-semibold">

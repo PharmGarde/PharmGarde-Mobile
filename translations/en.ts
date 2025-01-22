@@ -28,7 +28,9 @@ export default {
     email: "Email",
     enterEmail: "Enter your email",
     password: "Password",
+    confirmPassword: "Confirm Password",
     createPassword: "Create a password",
+    confirmPasswordPlaceholder: "Enter your password",
     firstName: "First Name",
     enterFirstName: "Enter your first name",
     lastName: "Last Name",
@@ -50,6 +52,10 @@ export default {
     password: {
       required: "Password is required",
       tooShort: "Password must be at least 8 characters long",
+    },
+    confirmPassword: {
+      required: "Please confirm your password",
+      mismatch: "Passwords do not match",
     },
     given_name: {
       required: "First name is required",

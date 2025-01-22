@@ -27,7 +27,9 @@ export default {
     email: "البريد الإلكتروني",
     enterEmail: "أدخل بريدك الإلكتروني",
     password: "كلمة المرور",
+    confirmPassword: "تأكيد كلمة المرور",
     createPassword: "أنشئ كلمة مرور",
+    confirmPasswordPlaceholder: "تأكيد أنشاء كلمة المرور",
     firstName: "الاسم الأول",
     enterFirstName: "أدخل اسمك الأول",
     lastName: "اسم العائلة",
@@ -49,6 +51,10 @@ export default {
     password: {
       required: "كلمة المرور مطلوبة",
       tooShort: "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
+    },
+    confirmPassword: {
+      required: "تأكيد كلمة المرور مطلوبة",
+      mismatch: "كلمة المرور غير متطابقة",
     },
     given_name: {
       required: "الاسم الأول مطلوب",

@@ -44,13 +44,17 @@ export default function ConfirmSignUp() {
     setSuccessMessage("");
 
     try {
+      // Call confirmSignUp from authService
       await authService.confirmSignUp(username as string, code);
       setSuccessMessage("success");
+
+      // Redirect to sign-in after a short delay
       setTimeout(() => {
         router.push("/sign-in");
       }, 1500);
     } catch (error: any) {
       setError("error");
+      console.error("Confirmation error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -62,10 +66,12 @@ export default function ConfirmSignUp() {
     setSuccessMessage("");
 
     try {
+      // Call resendConfirmationCode from authService
       await authService.resendConfirmationCode(username as string);
       setSuccessMessage("resent");
     } catch (error: any) {
       setError("error");
+      console.error("Resend code error:", error);
     } finally {
       setIsResending(false);
     }
@@ -122,6 +128,7 @@ export default function ConfirmSignUp() {
                 </Text>
               ) : null}
 
+              {/* Verification Code Input */}
               <View className="w-full">
                 <Text
                   className={`text-sm font-medium text-gray-700 mb-1.5 ${

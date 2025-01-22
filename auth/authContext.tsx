@@ -1,19 +1,12 @@
-import {
-  getCurrentUser,
-  signIn,
-  signOut,
-  signUp,
-  type SignInOutput,
-  type SignUpOutput,
-} from "@aws-amplify/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { authService } from "./authService";
+import { getCurrentUser, signOut as amplifySignOut } from "@aws-amplify/auth";
 
 type AuthContextType = {
   isAuthenticated: boolean;
   isLoading: boolean;
   user: any | null;
-  signIn: (username: string, password: string) => Promise<SignInOutput>;
+  signIn: (username: string, password: string) => Promise<any>;
   signUp: (params: {
     username: string;
     password: string;
@@ -21,7 +14,7 @@ type AuthContextType = {
     given_name: string;
     family_name: string;
     phone_number: string;
-  }) => Promise<SignUpOutput>;
+  }) => Promise<any>;
   signOut: () => Promise<void>;
   forgotPassword: (username: string) => Promise<void>;
   resetPassword: (
@@ -55,9 +48,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  // Use authService.signIn
   const handleSignIn = async (username: string, password: string) => {
     try {
-      const signInResult = await signIn({ username, password });
+      const signInResult = await authService.signIn(username, password);
       if (signInResult.isSignedIn) {
         const user = await getCurrentUser();
         setUser(user);
@@ -65,12 +59,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
       return signInResult;
     } catch (error) {
-      console.log("error", error);
-
+      console.error("Sign-in error:", error);
       throw error;
     }
   };
 
+  // Use authService.signUp
   const handleSignUp = async ({
     username,
     password,
@@ -87,37 +81,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     phone_number: string;
   }) => {
     try {
-      const signUpResult = await signUp({
+      const signUpResult = await authService.signUp({
         username,
         password,
-        options: {
-          userAttributes: {
-            email,
-            given_name,
-            family_name,
-            phone_number,
-          },
-        },
+        email,
+        given_name,
+        family_name,
+        phone_number,
       });
       return signUpResult;
     } catch (error) {
+      console.error("Sign-up error:", error);
       throw error;
     }
   };
 
   const handleSignOut = async () => {
     try {
-      await signOut();
+      await amplifySignOut();
       setUser(null);
       setIsAuthenticated(false);
     } catch (error) {
+      console.error("Sign-out error:", error);
       throw error;
     }
   };
+
   const handleForgotPassword = async (username: string) => {
     try {
       await authService.forgotPassword(username);
     } catch (error) {
+      console.error("Forgot password error:", error);
       throw error;
     }
   };
@@ -130,6 +124,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authService.confirmForgotPassword(username, code, newPassword);
     } catch (error) {
+      console.error("Reset password error:", error);
       throw error;
     }
   };
