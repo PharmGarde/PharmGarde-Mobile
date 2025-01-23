@@ -1,6 +1,6 @@
 import * as SplashScreen from "expo-splash-screen";
-import { Stack } from "expo-router";
-import { AuthProvider } from "../auth/authContext";
+import { Stack, Redirect } from "expo-router";
+import { AuthProvider, useAuth } from "../auth/authContext";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { I18nextProvider } from "react-i18next";
@@ -9,6 +9,31 @@ import i18n from "../i18n/i18nConfig";
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
+// Guarded Layout for Protected Routes
+function ProtectedLayout() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  // Show nothing while loading
+  if (isLoading) {
+    return null;
+  }
+
+  // Redirect to auth if not authenticated
+  if (!isAuthenticated) {
+    return <Redirect href="/(auth)/sign-in" />;
+  }
+
+  // Render protected routes
+  return (
+    <Stack>
+      <Stack.Screen name="(home)" options={{ headerShown: false }} />
+      <Stack.Screen name="(profile)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+    </Stack>
+  );
+}
+
+// Main Layout
 export default function RootLayout() {
   // Load custom fonts
   const [fontsLoaded] = useFonts({
@@ -39,14 +64,14 @@ export default function RootLayout() {
 
   return (
     <I18nextProvider i18n={i18n}>
-      {" "}
-      {/* Wrap your app with I18nextProvider */}
       <AuthProvider>
         <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(home)" />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(app)" />
+          {/* Public Routes */}
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="index" options={{ headerShown: false }} />
+
+          {/* Protected Routes */}
+          <ProtectedLayout />
         </Stack>
       </AuthProvider>
     </I18nextProvider>

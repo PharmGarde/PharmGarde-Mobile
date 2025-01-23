@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 export default function Navbar() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user, signOut } = useAuth();
   const { t, i18n } = useTranslation();
 
   const slideAnim = useRef(new Animated.Value(-320)).current;
@@ -18,6 +18,11 @@ export default function Navbar() {
   const toggleLanguage = async () => {
     const newLang = isRTL ? "en" : "ar";
     await i18n.changeLanguage(newLang);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.replace("/(auth)/sign-in");
   };
 
   useEffect(() => {
@@ -156,24 +161,42 @@ export default function Navbar() {
           )}
 
           {isAuthenticated && (
-            <TouchableOpacity
-              className={`flex-row items-center p-4 mb-2 rounded-lg active:bg-gray-100 ${
-                isRTL ? "flex-row-reverse" : ""
-              }`}
-              onPress={() => {
-                router.push("/(app)/profile");
-                setIsMenuOpen(false);
-              }}
-            >
-              <Ionicons name="person-outline" size={24} color="#374151" />
-              <Text
-                className={`font-medium text-gray-700 ${
-                  isRTL ? "mr-3" : "ml-3"
+            <>
+              <TouchableOpacity
+                className={`flex-row items-center p-4 mb-2 rounded-lg active:bg-gray-100 ${
+                  isRTL ? "flex-row-reverse" : ""
                 }`}
+                onPress={() => {
+                  router.push("/(profile)");
+                  setIsMenuOpen(false);
+                }}
               >
-                {t("navbar.profile")}
-              </Text>
-            </TouchableOpacity>
+                <Ionicons name="person-outline" size={24} color="#374151" />
+                <Text
+                  className={`font-medium text-gray-700 ${
+                    isRTL ? "mr-3" : "ml-3"
+                  }`}
+                >
+                  {t("navbar.profile")}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className={`flex-row items-center p-4 mb-2 rounded-lg active:bg-gray-100 ${
+                  isRTL ? "flex-row-reverse" : ""
+                }`}
+                onPress={handleSignOut}
+              >
+                <Ionicons name="log-out-outline" size={24} color="#374151" />
+                <Text
+                  className={`font-medium text-gray-700 ${
+                    isRTL ? "mr-3" : "ml-3"
+                  }`}
+                >
+                  {t("navbar.signOut")}
+                </Text>
+              </TouchableOpacity>
+            </>
           )}
         </View>
       </Animated.View>

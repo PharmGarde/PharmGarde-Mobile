@@ -64,7 +64,7 @@ export default function SignIn() {
     try {
       const user = await signIn(formData.username, formData.password);
       console.log("Sign-in successful:", user);
-      router.replace("/(app)/home");
+      router.replace("/(home)");
     } catch (error: any) {
       console.error("Sign-in error:", error);
       setErrors((prev) => ({ ...prev, general: error.message }));
