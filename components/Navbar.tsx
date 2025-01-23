@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Text, Animated } from "react-native";
+import { View, TouchableOpacity, Text, Animated, Dimensions } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState, useRef, useEffect } from "react";
@@ -11,7 +11,11 @@ export default function Navbar() {
   const { isAuthenticated, user, signOut } = useAuth();
   const { t, i18n } = useTranslation();
 
-  const slideAnim = useRef(new Animated.Value(-320)).current;
+  // Get the screen width to calculate the off-screen position
+  const screenWidth = Dimensions.get("window").width;
+
+  // Set the initial position of the menu to be completely off-screen
+  const slideAnim = useRef(new Animated.Value(-screenWidth)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const isRTL = i18n.language === "ar";
 
@@ -27,6 +31,7 @@ export default function Navbar() {
 
   useEffect(() => {
     if (isMenuOpen) {
+      // Slide the menu into view
       Animated.parallel([
         Animated.timing(slideAnim, {
           toValue: 0,
@@ -40,9 +45,10 @@ export default function Navbar() {
         }),
       ]).start();
     } else {
+      // Slide the menu completely off-screen
       Animated.parallel([
         Animated.timing(slideAnim, {
-          toValue: isRTL ? 320 : -320,
+          toValue: isRTL ? screenWidth : -screenWidth,
           duration: 300,
           useNativeDriver: true,
         }),
@@ -113,6 +119,7 @@ export default function Navbar() {
         )}
       </View>
 
+      {/* Menu */}
       <Animated.View
         className="absolute top-0 h-full bg-white z-50 shadow-xl"
         style={{
@@ -201,6 +208,7 @@ export default function Navbar() {
         </View>
       </Animated.View>
 
+      {/* Overlay */}
       {isMenuOpen && (
         <Animated.View
           className="absolute inset-0 bg-black/50 z-40"

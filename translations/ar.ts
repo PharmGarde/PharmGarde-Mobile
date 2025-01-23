@@ -2,6 +2,7 @@ export default {
   navbar: {
     home: "الرئيسية",
     login: "تسجيل الدخول",
+    signOut: "تسجيل الخروج",
     profile: "الملف الشخصي",
     appName: "PharmGarde",
   },
