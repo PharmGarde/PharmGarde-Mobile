@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "../../auth/authContext";
@@ -17,7 +19,7 @@ import Navbar from "@/components/Navbar";
 interface FormData {
   username: string;
   password: string;
-  confirmPassword: string; // Add confirmPassword field
+  confirmPassword: string;
   email: string;
   given_name: string;
   family_name: string;
@@ -28,7 +30,7 @@ interface FormData {
 interface FormErrors {
   username: string;
   password: string;
-  confirmPassword: string; // Add confirmPassword error field
+  confirmPassword: string;
   email: string;
   given_name: string;
   family_name: string;
@@ -40,7 +42,7 @@ export default function SignUp() {
   const [formData, setFormData] = useState<FormData>({
     username: "",
     password: "",
-    confirmPassword: "", // Initialize confirmPassword
+    confirmPassword: "",
     email: "",
     given_name: "",
     family_name: "",
@@ -51,7 +53,7 @@ export default function SignUp() {
   const [errors, setErrors] = useState<FormErrors>({
     username: "",
     password: "",
-    confirmPassword: "", // Initialize confirmPassword error
+    confirmPassword: "",
     email: "",
     given_name: "",
     family_name: "",
@@ -150,7 +152,6 @@ export default function SignUp() {
         phone_number: formData.phone_number,
       });
 
-      // Redirect to confirm sign-up page if necessary
       if (result.nextStep.signUpStep === "CONFIRM_SIGN_UP") {
         router.push({
           pathname: "/confirm-signup",
@@ -215,175 +216,184 @@ export default function SignUp() {
   return (
     <View className="flex-1 bg-white">
       <Navbar />
-      <ScrollView
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="flex-1"
-        contentContainerStyle={{ flexGrow: 1 }}
-        showsVerticalScrollIndicator={false}
       >
-        <View className="flex-1 px-6 py-6">
-          <View className="w-full max-w-sm mx-auto">
-            {/* Header */}
-            <View className={`mb-8 ${isRTL ? "items-end" : "items-start"}`}>
-              <Text
-                className={`text-3xl font-bold text-gray-800 mb-2 ${
-                  isRTL ? "text-right" : "text-left"
-                } w-full`}
-              >
-                {t("signUp.createAccount")}
-              </Text>
-              <Text
-                className={`text-base text-gray-500 ${
-                  isRTL ? "text-right" : "text-left"
-                } w-full`}
-              >
-                {t("signUp.getStarted")}
-              </Text>
-            </View>
-
-            {/* Form */}
-            <View className="space-y-4 w-full">
-              {errors.general ? (
+        <ScrollView
+          className="flex-1"
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View className="flex-1 px-6 py-6">
+            <View className="w-full max-w-sm mx-auto">
+              {/* Header */}
+              <View className={`mb-8 ${isRTL ? "items-end" : "items-start"}`}>
                 <Text
-                  className={`text-red-500 text-sm mb-4 ${
+                  className={`text-3xl font-bold text-gray-800 mb-2 ${
                     isRTL ? "text-right" : "text-left"
                   } w-full`}
                 >
-                  {t("validation.general.error")}
+                  {t("signUp.createAccount")}
                 </Text>
-              ) : null}
+                <Text
+                  className={`text-base text-gray-500 ${
+                    isRTL ? "text-right" : "text-left"
+                  } w-full`}
+                >
+                  {t("signUp.getStarted")}
+                </Text>
+              </View>
 
-              {renderInput(
-                "username",
-                t("signUp.username"),
-                t("signUp.enterUsername"),
-                {
-                  autoCapitalize: "none",
-                  style: {
-                    marginTop: 5,
-                    textAlign: isRTL ? "right" : "left",
-                    writingDirection: isRTL ? "rtl" : "ltr",
-                  },
-                }
-              )}
-
-              {renderInput(
-                "given_name",
-                t("signUp.firstName"),
-                t("signUp.enterFirstName"),
-                {
-                  style: {
-                    marginTop: 5,
-                    textAlign: isRTL ? "right" : "left",
-                    writingDirection: isRTL ? "rtl" : "ltr",
-                  },
-                }
-              )}
-
-              {renderInput(
-                "family_name",
-                t("signUp.lastName"),
-                t("signUp.enterLastName"),
-                {
-                  style: {
-                    marginTop: 5,
-                    textAlign: isRTL ? "right" : "left",
-                    writingDirection: isRTL ? "rtl" : "ltr",
-                  },
-                }
-              )}
-
-              {renderInput("email", t("signUp.email"), t("signUp.enterEmail"), {
-                keyboardType: "email-address",
-                autoCapitalize: "none",
-                style: {
-                  marginTop: 5,
-                  textAlign: isRTL ? "right" : "left",
-                  writingDirection: isRTL ? "rtl" : "ltr",
-                },
-              })}
-
-              {renderInput(
-                "phone_number",
-                t("signUp.phoneNumber"),
-                t("signUp.enterPhoneNumber"),
-                {
-                  keyboardType: "phone-pad",
-                  style: {
-                    marginTop: 5,
-                    textAlign: isRTL ? "right" : "left",
-                    writingDirection: isRTL ? "rtl" : "ltr",
-                  },
-                }
-              )}
-
-              {renderInput(
-                "password",
-                t("signUp.password"),
-                t("signUp.createPassword"),
-                {
-                  secureTextEntry: true,
-                  style: {
-                    marginTop: 5,
-                    textAlign: isRTL ? "right" : "left",
-                    writingDirection: isRTL ? "rtl" : "ltr",
-                  },
-                }
-              )}
-
-              {/* Add Confirm Password Field */}
-              {renderInput(
-                "confirmPassword",
-                t("signUp.confirmPassword"),
-                t("signUp.confirmPasswordPlaceholder"),
-                {
-                  secureTextEntry: true,
-                  style: {
-                    marginTop: 5,
-                    textAlign: isRTL ? "right" : "left",
-                    writingDirection: isRTL ? "rtl" : "ltr",
-                  },
-                }
-              )}
-
-              {/* Sign Up Button */}
-              <TouchableOpacity
-                className={`w-full h-12 rounded-lg justify-center items-center mt-6 ${
-                  isLoading ? "bg-primary/70" : "bg-primary"
-                }`}
-                onPress={handleSignUp}
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <ActivityIndicator color="white" />
-                ) : (
-                  <Text className="text-white font-semibold text-base">
-                    {t("signUp.signUp")}
+              {/* Form */}
+              <View className="space-y-4 w-full">
+                {errors.general ? (
+                  <Text
+                    className={`text-red-500 text-sm mb-4 ${
+                      isRTL ? "text-right" : "text-left"
+                    } w-full`}
+                  >
+                    {t("validation.general.error")}
                   </Text>
-                )}
-              </TouchableOpacity>
+                ) : null}
 
-              {/* Sign In Link */}
-              <View
-                className={`flex-row justify-center items-center mt-6 mb-6 ${
-                  isRTL ? "flex-row-reverse" : ""
-                }`}
-              >
-                <Text className="text-gray-600">
-                  {t("signUp.alreadyHaveAccount")}{" "}
-                </Text>
+                {renderInput(
+                  "username",
+                  t("signUp.username"),
+                  t("signUp.enterUsername"),
+                  {
+                    autoCapitalize: "none",
+                    style: {
+                      marginTop: 5,
+                      textAlign: isRTL ? "right" : "left",
+                      writingDirection: isRTL ? "rtl" : "ltr",
+                    },
+                  }
+                )}
+
+                {renderInput(
+                  "given_name",
+                  t("signUp.firstName"),
+                  t("signUp.enterFirstName"),
+                  {
+                    style: {
+                      marginTop: 5,
+                      textAlign: isRTL ? "right" : "left",
+                      writingDirection: isRTL ? "rtl" : "ltr",
+                    },
+                  }
+                )}
+
+                {renderInput(
+                  "family_name",
+                  t("signUp.lastName"),
+                  t("signUp.enterLastName"),
+                  {
+                    style: {
+                      marginTop: 5,
+                      textAlign: isRTL ? "right" : "left",
+                      writingDirection: isRTL ? "rtl" : "ltr",
+                    },
+                  }
+                )}
+
+                {renderInput(
+                  "email",
+                  t("signUp.email"),
+                  t("signUp.enterEmail"),
+                  {
+                    keyboardType: "email-address",
+                    autoCapitalize: "none",
+                    style: {
+                      marginTop: 5,
+                      textAlign: isRTL ? "right" : "left",
+                      writingDirection: isRTL ? "rtl" : "ltr",
+                    },
+                  }
+                )}
+
+                {renderInput(
+                  "phone_number",
+                  t("signUp.phoneNumber"),
+                  t("signUp.enterPhoneNumber"),
+                  {
+                    keyboardType: "phone-pad",
+                    style: {
+                      marginTop: 5,
+                      textAlign: isRTL ? "right" : "left",
+                      writingDirection: isRTL ? "rtl" : "ltr",
+                    },
+                  }
+                )}
+
+                {renderInput(
+                  "password",
+                  t("signUp.password"),
+                  t("signUp.createPassword"),
+                  {
+                    secureTextEntry: true,
+                    style: {
+                      marginTop: 5,
+                      textAlign: isRTL ? "right" : "left",
+                      writingDirection: isRTL ? "rtl" : "ltr",
+                    },
+                  }
+                )}
+
+                {renderInput(
+                  "confirmPassword",
+                  t("signUp.confirmPassword"),
+                  t("signUp.confirmPasswordPlaceholder"),
+                  {
+                    secureTextEntry: true,
+                    style: {
+                      marginTop: 5,
+                      textAlign: isRTL ? "right" : "left",
+                      writingDirection: isRTL ? "rtl" : "ltr",
+                    },
+                  }
+                )}
+
+                {/* Sign Up Button */}
                 <TouchableOpacity
-                  onPress={() => router.push("/(auth)/sign-in")}
+                  className={`w-full h-12 rounded-lg justify-center items-center mt-6 ${
+                    isLoading ? "bg-primary/70" : "bg-primary"
+                  }`}
+                  onPress={handleSignUp}
                   disabled={isLoading}
                 >
-                  <Text className="text-primary font-semibold">
-                    {t("signUp.signIn")}
-                  </Text>
+                  {isLoading ? (
+                    <ActivityIndicator color="white" />
+                  ) : (
+                    <Text className="text-white font-semibold text-base">
+                      {t("signUp.signUp")}
+                    </Text>
+                  )}
                 </TouchableOpacity>
+
+                {/* Sign In Link */}
+                <View
+                  className={`flex-row justify-center items-center mt-6 mb-6 ${
+                    isRTL ? "flex-row-reverse" : ""
+                  }`}
+                >
+                  <Text className="text-gray-600">
+                    {t("signUp.alreadyHaveAccount")}{" "}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => router.push("/(auth)/sign-in")}
+                    disabled={isLoading}
+                  >
+                    <Text className="text-primary font-semibold">
+                      {t("signUp.signIn")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
