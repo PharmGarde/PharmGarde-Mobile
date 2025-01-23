@@ -20,7 +20,7 @@ export default function ForgotPassword() {
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const router = useRouter();
-  const { forgotPassword } = useAuth(); // Use forgotPassword from useAuth
+  const { forgotPassword } = useAuth();
   const { t } = useTranslation();
   const { isRTL } = useLayoutDirection();
 
@@ -35,11 +35,9 @@ export default function ForgotPassword() {
     setSuccessMessage("");
 
     try {
-      // Call forgotPassword from useAuth
       await forgotPassword(username);
       setSuccessMessage("success");
 
-      // Redirect to reset-password page with the username as a parameter
       router.push({
         pathname: "/reset-password",
         params: { username },

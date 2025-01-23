@@ -1,9 +1,7 @@
-import React from 'react'
-import { View, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native'
-import Navbar from '../../components/Navbar'
-import images from '../../constants/image'
-import { Ionicons } from '@expo/vector-icons'
-import Filtrage from '@/components/Home/Filtrage'
+import React from "react";
+import { View, SafeAreaView } from "react-native";
+import Navbar from "../../components/Navbar";
+import Filtrage from "@/components/Home/Filtrage";
 
 function Home() {
   return (
@@ -32,11 +30,10 @@ function Home() {
             </TouchableOpacity>
           </View>
         </View> */}
-        <Filtrage/>
- 
+        <Filtrage />
       </SafeAreaView>
     </View>
-  )
+  );
 }
 
-export default Home
+export default Home;

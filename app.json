@@ -16,7 +16,13 @@
         "foregroundImage": "./assets/images/logo-pharmacy.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["INTERNET", "ACCESS_NETWORK_STATE"]
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ],
+      "package": "com.anonymous.PharmGarde"
     },
     "web": {
       "bundler": "metro",

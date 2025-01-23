@@ -66,7 +66,13 @@ export default function SignIn() {
       console.log("Sign-in successful:", user);
       router.replace("/(app)/home");
     } catch (error: any) {
-      console.error("Sign-in error:", error);
+      console.error("Sign-in error in sign-in.tsx:", {
+        name: error.name, // Error name
+        code: error.code, // AWS Cognito error code
+        message: error.message, // Error message
+        underlyingError: error.underlyingError, // Underlying error details
+        stack: error.stack, // Error stack trace
+      });
 
       // Handle specific Cognito errors
       let errorMessage = t("signIn.unknownError");

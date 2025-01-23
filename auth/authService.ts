@@ -40,12 +40,26 @@ export const authService = {
       const user = await amplifySignIn({ username, password });
       console.log("Sign-in successful. User:", user);
       return user;
-    } catch (error) {
-      console.error(
-        "Sign-in error in authService:",
-        JSON.stringify(error, null, 2)
-      );
-      throw error;
+    } catch (error: any) {
+      console.error("Sign-in error in authService:", {
+        name: error.name, // Error name
+        code: error.code, // AWS Cognito error code
+        message: error.message, // Error message
+        underlyingError: error.underlyingError, // Underlying error details
+        stack: error.stack, // Error stack trace
+      });
+
+      // Handle specific Cognito errors
+      switch (error.code) {
+        case "UserNotFoundException":
+          throw new Error("User not found. Please check your username.");
+        case "NotAuthorizedException":
+          throw new Error("Incorrect username or password.");
+        case "UserNotConfirmedException":
+          throw new Error("User not confirmed. Please confirm your account.");
+        default:
+          throw new Error("An unknown error occurred during sign-in.");
+      }
     }
   },
 
