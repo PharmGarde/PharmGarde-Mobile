@@ -166,11 +166,35 @@ export const authService = {
     }
   },
 
-  // Get Current User (Not directly supported by Cognito API; requires token validation)
-  getCurrentUser: async () => {
-    throw new Error(
-      "getCurrentUser is not implemented for direct Cognito API usage."
-    );
+  // Get Current User
+  getCurrentUser: async (accessToken: string) => {
+    const body = {
+      AccessToken: accessToken,
+    };
+
+    try {
+      const response = await cognitoRequest("GetUser", body);
+
+      // Convert the UserAttributes array into an object
+      const userAttributes = response.UserAttributes.reduce(
+        (acc: any, attr: any) => {
+          acc[attr.Name] = attr.Value;
+          return acc;
+        },
+        {}
+      );
+
+      return {
+        username: response.Username,
+        attributes: userAttributes,
+      };
+    } catch (error: any) {
+      console.error(
+        "Error fetching current user:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
   },
 
   // Sign Out (Not directly supported by Cognito API; requires token invalidation)

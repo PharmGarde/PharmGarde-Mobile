@@ -2,15 +2,19 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
+// Define a type for valid Ionicons names
+type IoniconsName = "person-circle-outline" | "card-outline" | "settings-outline" | "bug-outline";
+
+// Define the help topics with typed icon names
+const helpTopics: { title: string; icon: IoniconsName }[] = [
+  { title: "Account Issues", icon: "person-circle-outline" },
+  { title: "Payment Problems", icon: "card-outline" },
+  { title: "App Features", icon: "settings-outline" },
+  { title: "Report a Bug", icon: "bug-outline" },
+];
+
 export default function HelpCenter() {
   const router = useRouter();
-
-  const helpTopics = [
-    { title: "Account Issues", icon: "person-circle-outline" },
-    { title: "Payment Problems", icon: "card-outline" },
-    { title: "App Features", icon: "settings-outline" },
-    { title: "Report a Bug", icon: "bug-outline" },
-  ];
 
   return (
     <ScrollView className="flex-1 bg-white">

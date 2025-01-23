@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { authService } from "./authService";
-import { jwtDecode } from "jwt-decode";
 import { router } from "expo-router";
 
 type AuthContextType = {
@@ -43,8 +42,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const accessToken = await SecureStore.getItemAsync("accessToken");
       if (accessToken) {
+        const currentUser = await authService.getCurrentUser(accessToken);
         const decodedUser = await authService.decodeToken(accessToken);
-        setUser(decodedUser);
+
+        // Combine decoded user info with attributes
+        const userWithAttributes = {
+          ...decodedUser,
+          attributes: currentUser.attributes,
+        };
+
+        setUser(userWithAttributes);
         setIsAuthenticated(true);
       } else {
         setIsAuthenticated(false);

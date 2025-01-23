@@ -2,34 +2,38 @@ import { View, Text, TouchableOpacity, Image, ScrollView } from "react-native";
 import { useAuth } from "../../auth/authContext";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { jwtDecode } from "jwt-decode";
-
-// Define a custom type for the decoded token
-interface CustomJwtPayload {
-  email?: string;
-  given_name?: string;
-  family_name?: string;
-  phone_number?: string;
-  picture?: string;
-}
 
 export default function Profile() {
   const { user } = useAuth();
   const router = useRouter();
 
-  // Decode the ID token to access user attributes
-  const idToken = user?.signInUserSession?.idToken?.jwtToken;
-  const decodedToken = idToken ? (jwtDecode(idToken) as CustomJwtPayload) : null;
-
-  // Extract user attributes from the decoded token
-  const email = decodedToken?.email || "N/A";
-  const givenName = decodedToken?.given_name || "N/A";
-  const familyName = decodedToken?.family_name || "N/A";
-  const phoneNumber = decodedToken?.phone_number || "N/A";
+  // Extract user attributes with proper fallbacks
+  const email = user?.attributes?.email || "N/A";
+  const givenName = user?.attributes?.given_name || "N/A";
+  const familyName = user?.attributes?.family_name || "N/A";
+  const phoneNumber = user?.attributes?.phone_number || "N/A";
   const username = user?.username || "N/A";
 
-  console.log(user.idToken);
-  
+  // Add validation for required fields
+  const isProfileComplete = Boolean(
+    user?.attributes?.email &&
+    user?.attributes?.given_name &&
+    user?.attributes?.family_name
+  );
+
+  if (!isProfileComplete) {
+    console.warn('Some profile information is missing from the token');
+  }
+
+  const handleEditProfile = () => {
+    // Add your edit profile logic here
+    console.log("Edit profile clicked");
+  };
+
+  const handleChangePhoto = () => {
+    // Add your photo change logic here
+    console.log("Change photo clicked");
+  };
 
   return (
     <ScrollView className="flex-1 bg-white">
@@ -52,9 +56,9 @@ export default function Profile() {
       {/* Profile Picture */}
       <View className="items-center mt-8">
         <View className="w-32 h-32 bg-gray-200 rounded-full overflow-hidden">
-          {decodedToken?.picture ? (
+          {user?.attributes?.picture ? (
             <Image
-              source={{ uri: decodedToken.picture }}
+              source={{ uri: user.attributes.picture }}
               className="w-full h-full"
             />
           ) : (
@@ -63,7 +67,7 @@ export default function Profile() {
             </View>
           )}
         </View>
-        <TouchableOpacity className="mt-4">
+        <TouchableOpacity className="mt-4" onPress={handleChangePhoto}>
           <Text className="text-primary font-medium">Change Photo</Text>
         </TouchableOpacity>
       </View>
@@ -98,7 +102,10 @@ export default function Profile() {
       </View>
 
       {/* Edit Profile Button */}
-      <TouchableOpacity className="mx-6 mt-8 bg-primary p-4 rounded-xl">
+      <TouchableOpacity 
+        className="mx-6 mt-8 mb-8 bg-primary p-4 rounded-xl"
+        onPress={handleEditProfile}
+      >
         <Text className="text-white text-center font-semibold text-lg">
           Edit Profile
         </Text>
