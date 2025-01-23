@@ -1,39 +1,53 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Amplify } from '@aws-amplify/core';
 import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
+import '@aws-amplify/react-native';
+import { Stack } from 'expo-router';
+import { AuthProvider } from '../auth/authContext';
+import { awsConfig } from '../auth/authConfig';
 import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { useFonts } from 'expo-font';
+import {NavigationContainer} from '@react-navigation/native';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+Amplify.configure(awsConfig);
+
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const [fontsLoaded] = useFonts({
+    "Rubik-Bold": require('../assets/fonts/Rubik-Bold.ttf'),
+    "Rubik-Medium": require('../assets/fonts/Rubik-Medium.ttf'),
+    "Rubik-Regular": require('../assets/fonts/Rubik-Regular.ttf'),
+    "Rubik-ExtraBold":require('../assets/fonts/Rubik-ExtraBold.ttf'),
+    "Rubik-Light" : require('../assets/fonts/Rubik-Light.ttf'),
+    "Rubik-SemiBold" : require('../assets/fonts/Rubik-SemiBold.ttf')
+  })
 
   useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
+    async function prepare() {
+      try {
+        if (fontsLoaded) {
+          await SplashScreen.hideAsync();
+        }
+      } catch (e) {
+        console.warn(e);
+      }
     }
-  }, [loaded]);
+    prepare();
+  }, [fontsLoaded]);
 
-  if (!loaded) {
-    return null;
-  }
-
+  if (!fontsLoaded) return null;
+  
   return (
-   
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
+    <AuthProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(home)/index" />
+        <Stack.Screen name="DetailsPage" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(app)" />
+        <Stack.Screen name="(favorites)" />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
-     
-   
+    </AuthProvider>
   );
 }
