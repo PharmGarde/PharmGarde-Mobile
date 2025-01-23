@@ -1,4 +1,3 @@
-import { Amplify } from "aws-amplify";
 import * as SplashScreen from "expo-splash-screen";
 import { Stack } from "expo-router";
 import { AuthProvider } from "../auth/authContext";
@@ -6,8 +5,6 @@ import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import { I18nextProvider } from "react-i18next";
 import i18n from "../i18n/i18nConfig";
-import { awsConfig } from "../auth/authConfig";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
@@ -22,29 +19,6 @@ export default function RootLayout() {
     "Rubik-Light": require("../assets/fonts/Rubik-Light.ttf"),
     "Rubik-SemiBold": require("../assets/fonts/Rubik-SemiBold.ttf"),
   });
-
-  // Initialize Amplify
-  useEffect(() => {
-    const configureAmplify = async () => {
-      try {
-        Amplify.configure({
-          ...awsConfig,
-          storage: AsyncStorage,
-          Logging: {
-            level: "DEBUG",
-          },
-        });
-        console.log("Amplify configured successfully");
-      } catch (error) {
-        console.error(
-          "Error configuring Amplify:",
-          JSON.stringify(error, null, 2)
-        );
-      }
-    };
-
-    configureAmplify();
-  }, []);
 
   // Hide the splash screen when fonts are loaded
   useEffect(() => {

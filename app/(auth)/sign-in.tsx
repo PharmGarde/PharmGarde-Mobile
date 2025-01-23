@@ -13,6 +13,7 @@ import { useAuth } from "../../auth/authContext";
 import { useTranslation } from "react-i18next";
 import Navbar from "@/components/Navbar";
 import { useLayoutDirection } from "@/hooks/useLayoutDirection";
+import { authService } from "@/auth/authService";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
@@ -61,38 +62,12 @@ export default function SignIn() {
     setErrors((prev) => ({ ...prev, general: "" }));
 
     try {
-      console.log("Attempting to sign in with:", formData.username);
       const user = await signIn(formData.username, formData.password);
       console.log("Sign-in successful:", user);
       router.replace("/(app)/home");
     } catch (error: any) {
-      console.error("Sign-in error in sign-in.tsx:", {
-        name: error.name, // Error name
-        code: error.code, // AWS Cognito error code
-        message: error.message, // Error message
-        underlyingError: error.underlyingError, // Underlying error details
-        stack: error.stack, // Error stack trace
-      });
-
-      // Handle specific Cognito errors
-      let errorMessage = t("signIn.unknownError");
-      if (error.code) {
-        switch (error.code) {
-          case "UserNotFoundException":
-            errorMessage = t("signIn.userNotFound");
-            break;
-          case "NotAuthorizedException":
-            errorMessage = t("signIn.invalidCredentials");
-            break;
-          case "UserNotConfirmedException":
-            errorMessage = t("signIn.userNotConfirmed");
-            break;
-          default:
-            errorMessage = error.message || t("signIn.unknownError");
-        }
-      }
-
-      setErrors((prev) => ({ ...prev, general: errorMessage }));
+      console.error("Sign-in error:", error);
+      setErrors((prev) => ({ ...prev, general: error.message }));
     } finally {
       setIsLoading(false);
     }

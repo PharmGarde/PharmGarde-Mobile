@@ -13,6 +13,7 @@ import { useAuth } from "@/auth/authContext";
 import { useTranslation } from "react-i18next";
 import { useLayoutDirection } from "@/hooks/useLayoutDirection";
 import Navbar from "@/components/Navbar";
+import { authService } from "@/auth/authService";
 
 export default function ResetPassword() {
   const [code, setCode] = useState("");
@@ -28,7 +29,6 @@ export default function ResetPassword() {
   const { isRTL } = useLayoutDirection();
 
   const handleSubmit = async () => {
-    // Validate fields
     if (!code.trim() || !newPassword.trim() || !confirmPassword.trim()) {
       setError("required");
       return;
@@ -49,11 +49,9 @@ export default function ResetPassword() {
     setSuccessMessage("");
 
     try {
-      // Call resetPassword from useAuth
       await resetPassword(username as string, code, newPassword);
       setSuccessMessage("success");
 
-      // Redirect to sign-in after a short delay
       setTimeout(() => {
         router.push("/sign-in");
       }, 1500);

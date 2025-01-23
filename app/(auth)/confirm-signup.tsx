@@ -9,10 +9,10 @@ import {
   Platform,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { authService } from "../../auth/authService";
 import { useTranslation } from "react-i18next";
 import { useLayoutDirection } from "@/hooks/useLayoutDirection";
 import Navbar from "@/components/Navbar";
+import { useAuth } from "@/auth/authContext";
 
 export default function ConfirmSignUp() {
   const [code, setCode] = useState("");
@@ -22,6 +22,8 @@ export default function ConfirmSignUp() {
   const [successMessage, setSuccessMessage] = useState("");
   const { username } = useLocalSearchParams();
   const router = useRouter();
+  const { confirmSignUp, resendConfirmationCode } = useAuth();
+
   const { t } = useTranslation();
   const { isRTL } = useLayoutDirection();
 
@@ -44,11 +46,9 @@ export default function ConfirmSignUp() {
     setSuccessMessage("");
 
     try {
-      // Call confirmSignUp from authService
-      await authService.confirmSignUp(username as string, code);
+      await confirmSignUp(username as string, code);
       setSuccessMessage("success");
 
-      // Redirect to sign-in after a short delay
       setTimeout(() => {
         router.push("/sign-in");
       }, 1500);
@@ -66,8 +66,7 @@ export default function ConfirmSignUp() {
     setSuccessMessage("");
 
     try {
-      // Call resendConfirmationCode from authService
-      await authService.resendConfirmationCode(username as string);
+      await resendConfirmationCode(username as string); // Use the method from authContext
       setSuccessMessage("resent");
     } catch (error: any) {
       setError("error");

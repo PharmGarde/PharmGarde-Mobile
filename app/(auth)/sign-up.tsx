@@ -142,7 +142,6 @@ export default function SignUp() {
 
     setIsLoading(true);
     try {
-      // Call the signUp function from useAuth
       const result = await signUp({
         username: formData.username,
         password: formData.password,
@@ -159,7 +158,6 @@ export default function SignUp() {
         });
       }
     } catch (error: any) {
-      // Handle errors
       setErrors((prev) => ({
         ...prev,
         general: error.message || t("validation.general.error"),

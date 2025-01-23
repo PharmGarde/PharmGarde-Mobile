@@ -1,5 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import * as SecureStore from "expo-secure-store";
 import { authService } from "./authService";
+import { jwtDecode } from "jwt-decode";
+import { router } from "expo-router";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -21,6 +24,8 @@ type AuthContextType = {
     code: string,
     newPassword: string
   ) => Promise<void>;
+  resendConfirmationCode: (username: string) => Promise<void>;
+  confirmSignUp: (username: string, code: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -36,12 +41,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuthState = async () => {
     try {
-      const user = await authService.getCurrentUser();
-      setUser(user);
-      setIsAuthenticated(true);
-    } catch {
-      setUser(null);
+      const accessToken = await SecureStore.getItemAsync("accessToken");
+      if (accessToken) {
+        const decodedUser = await authService.decodeToken(accessToken);
+        setUser(decodedUser);
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Error checking auth state:", error);
       setIsAuthenticated(false);
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
@@ -50,10 +62,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleSignIn = async (username: string, password: string) => {
     setIsLoading(true);
     try {
-      console.log("Attempting to sign in with:", username);
       const user = await authService.signIn(username, password);
-      console.log("Sign-in successful. User:", user);
-      setUser(user);
+      await SecureStore.setItemAsync("accessToken", user.AccessToken);
+      await SecureStore.setItemAsync("idToken", user.IdToken);
+      await SecureStore.setItemAsync("refreshToken", user.RefreshToken);
+
+      const decodedUser = await authService.decodeToken(user.AccessToken);
+      setUser(decodedUser);
       setIsAuthenticated(true);
       return user;
     } catch (error) {
@@ -64,14 +79,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const handleSignUp = async ({
-    username,
-    password,
-    email,
-    given_name,
-    family_name,
-    phone_number,
-  }: {
+  const handleSignUp = async (params: {
     username: string;
     password: string;
     email: string;
@@ -81,14 +89,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }) => {
     setIsLoading(true);
     try {
-      const signUpResult = await authService.signUp({
-        username,
-        password,
-        email,
-        given_name,
-        family_name,
-        phone_number,
+      const signUpResult = await authService.signUp(params);
+
+      // Redirect to confirm sign-up page
+      router.push({
+        pathname: "/confirm-signup",
+        params: { username: params.username },
       });
+
       return signUpResult;
     } catch (error) {
       console.error("Sign-up error:", error);
@@ -101,9 +109,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
-      await authService.signOut();
+      await SecureStore.deleteItemAsync("accessToken");
+      await SecureStore.deleteItemAsync("idToken");
+      await SecureStore.deleteItemAsync("refreshToken");
+
       setUser(null);
       setIsAuthenticated(false);
+      router.replace("/sign-in");
     } catch (error) {
       console.error("Sign-out error:", error);
       throw error;
@@ -140,6 +152,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const handleConfirmSignUp = async (username: string, code: string) => {
+    setIsLoading(true);
+    try {
+      await authService.confirmSignUp(username, code);
+    } catch (error) {
+      console.error("Confirm sign-up error:", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendConfirmationCode = async (username: string) => {
+    setIsLoading(true);
+    try {
+      await authService.resendConfirmationCode(username);
+    } catch (error) {
+      console.error("Resend confirmation code error:", error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -151,6 +187,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signOut: handleSignOut,
         forgotPassword: handleForgotPassword,
         resetPassword: handleResetPassword,
+        resendConfirmationCode: handleResendConfirmationCode,
+        confirmSignUp: handleConfirmSignUp,
       }}
     >
       {children}
