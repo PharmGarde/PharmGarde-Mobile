@@ -40,14 +40,19 @@ export default function RootLayout() {
   
   return (
     <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }}>
+
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      {/* <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(home)/index" />
         <Stack.Screen name="DetailsPage" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(app)" />
         <Stack.Screen name="(favorites)" />
         <Stack.Screen name="index" options={{ headerShown: false }} />
-      </Stack>
+      </Stack> */}
     </AuthProvider>
   );
 }

@@ -2,6 +2,7 @@ import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
+import React from 'react';
 
 export default function Navbar() {
   const router = useRouter();

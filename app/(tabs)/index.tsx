@@ -1,84 +1,43 @@
-import { StyleSheet, View, Text, Alert, Pressable, Image } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React from 'react'
+import { View, Text, SafeAreaView, Image, TouchableOpacity } from 'react-native'
+import Navbar from '../../components/Navbar'
+import images from '../../constants/image'
+import { Ionicons } from '@expo/vector-icons'
+import Filtrage from '@/components/Home/Filtrage'
 
-export default function HomeScreen() {
+function Home() {
   return (
-    <LinearGradient colors={['#1CD4C6', '#0CAFA3']} style={styles.background}>
-      <View style={styles.container}>
-        <Image
-          source={require("../../assets/images/logo.png")}
-          style={styles.logo}
-        />
-        <Text style={styles.span}>Let's Get</Text>
-        <Text style={styles.title}>Started</Text>
-        <Text style={styles.slogan}>Find a pharmacy near you</Text>
-        <Pressable
-          style={({ pressed }) => [
-            styles.customButton,
-            pressed && styles.buttonPressed,
-          ]}
-          onPress={() => Alert.alert('Button pressed!')}
-        >
-          <Text style={styles.buttonText}>Get Started</Text>
-        </Pressable>
-      </View>
-    </LinearGradient>
-  );
+    <View className="flex-1 bg-[#007f5f]">
+      <SafeAreaView>
+        {/* <Navbar /> */}
+        
+        {/* <View className="items-center px-5 py-4">
+          <Text className="font-rubik-bold text-2xl text-[#007f5f] text-center">
+            Find Your Nearest Duty Pharmacy Anytime, Anywhere
+          </Text>
+          <Text className="font-rubik-medium text-center">
+            Whether it's late at night or during a holiday, we help you locate open pharmacies near you quickly and effortlessly.
+          </Text>
+          <View className="flex flex-row w-full justify-evenly">
+            <TouchableOpacity className="bg-green-50 shadow-md shadow-zinc-300 rounded-full w-5/12 px-3 py-4 mt-5">
+              <View className="flex flex-row items-center justify-center">
+                <Image source={images.pharmacyIllustration} className="w-5 h-5" resizeMode="contain"/>
+                <Text className="text-lg font-rubik-medium text-black-300 ml-2">Learn More</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity className="bg-green-50 shadow-md shadow-zinc-300 rounded-full w-5/12 py-4 mt-5">
+              <View className="flex flex-row items-center justify-center">
+                <Ionicons name="golf-outline" />
+                <Text className="text-lg font-rubik-medium text-black-300 ml-2">Near Me</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View> */}
+        <Filtrage/>
+ 
+      </SafeAreaView>
+    </View>
+  )
 }
 
-const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 120,
-    height: 120,
-    marginBottom: 20,
-  },
-  span: {
-    fontSize: 50,
-    fontWeight: '800',
-    color: '#ffffff',
-    textAlign: 'center',
-    letterSpacing: 2,
-  },
-  title: {
-    fontSize: 46,
-    fontWeight: '800',
-    color: '#ffffff',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  slogan: {
-    fontSize: 16,
-    color: '#ffffff',
-    textAlign: 'center',
-    marginBottom: 100,
-  },
-  customButton: {
-    backgroundColor: '#1CD4C6',
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    borderRadius: 14,
-    width: 220,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  buttonPressed: {
-    backgroundColor: '#0CAFA3',
-  },
-  buttonText: {
-    color: '#ffffff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
+export default Home
