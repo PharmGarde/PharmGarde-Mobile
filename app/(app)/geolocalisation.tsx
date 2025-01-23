@@ -183,54 +183,54 @@ const NearbyPlaces = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <ScrollView className="flex-1 bg-white">
-        <View className="flex-1 bg-white">
-          <View className="mx-4 mt-8">
-            <View className="flex-row items-center px-4 mb-4 border border-gray-300 rounded-lg h-10">
-          <Ionicons name="search" size={20} color="#666" style={{marginRight: 8}} />
+    <View className="flex-1 bg-white">
+      <View className="mx-4 mt-8">
+        {/* Search Bar */}
+        <View className="flex-row items-center px-4 mb-4 border border-gray-300 rounded-lg h-10">
+          <Ionicons name="search" size={20} color="#666" style={{ marginRight: 8 }} />
           <TextInput
             className="flex-1"
-            placeholder="Search pharmacies" 
+            placeholder="Search pharmacies"
             value={searchQuery}
             onChangeText={setSearchQuery}
-            scrollEnabled={false}
-            multiline={false}
-            numberOfLines={1}
           />
         </View>
-             <View className="flex-row items-center justify-between mb-4 mx-4">
-               <Text className="text-sm font-medium text-gray-600">
-                 {showOnlyOnDuty ? 'Show On Duty Only' : 'Show All Pharmacies'}
-               </Text>
-               <Switch
-                 value={showOnlyOnDuty}
-                 onValueChange={setShowOnlyOnDuty}
-                 trackColor={{ false: "#767577", true: "#166534" }}
-                 thumbColor={showOnlyOnDuty ? "#ffffff" : "#f4f3f4"}
-               />
-             </View>
-
-            <MapViewComponent
-              currentLocation={currentLocation}
-              youssoufiaCoords={YOUSSOUFIA_COORDS}
-              filteredPharmacies={filteredPharmacies}
-              onMarkerPress={handleMarkerPress}
-              selectedPharmacy={selectedPharmacy}
-            />
-
-            <View className="bg-white shadow-lg rounded-lg shadow-gray-400">
-              <FlatList
-                className="flex-1"
-                data={filteredPharmacies}
-                keyExtractor={(item) => item.id}
-                renderItem={renderPharmacyItem}
-              />
-            </View>
-          </View>
+  
+        {/* Toggle Switch */}
+        <View className="flex-row items-center justify-between mb-4 mx-4">
+          <Text className="text-sm font-medium text-gray-600">
+            {showOnlyOnDuty ? 'Show On Duty Only' : 'Show All Pharmacies'}
+          </Text>
+          <Switch
+            value={showOnlyOnDuty}
+            onValueChange={setShowOnlyOnDuty}
+            trackColor={{ false: "#767577", true: "#166534" }}
+            thumbColor={showOnlyOnDuty ? "#ffffff" : "#f4f3f4"}
+          />
         </View>
-      </ScrollView>
-    </SafeAreaView>
+  
+        {/* MapViewComponent */}
+        <MapViewComponent
+          currentLocation={currentLocation}
+          youssoufiaCoords={YOUSSOUFIA_COORDS}
+          filteredPharmacies={filteredPharmacies}
+          onMarkerPress={handleMarkerPress}
+          selectedPharmacy={selectedPharmacy}
+        />
+  
+        {/* FlatList for Pharmacies */}
+        <FlatList
+          data={filteredPharmacies}
+          keyExtractor={(item) => item.id}
+          renderItem={renderPharmacyItem}
+          contentContainerStyle={{ paddingBottom: 16 }} // Add padding to avoid overlap
+        />
+      </View>
+    </View>
+  </SafeAreaView>
   );
 };
 
 export default NearbyPlaces;
+
+
