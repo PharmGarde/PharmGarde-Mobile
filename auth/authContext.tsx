@@ -78,9 +78,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(decodedUser);
       setIsAuthenticated(true);
       return user;
-    } catch (error) {
-      console.error("Sign-in error:", error);
-      throw error;
+    } catch (error: any) {
+      console.error("Sign-in error:", error.message);
+      throw error; // This will throw the user-friendly error message
     } finally {
       setIsLoading(false);
     }
@@ -105,9 +105,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       return signUpResult;
-    } catch (error) {
-      console.error("Sign-up error:", error);
-      throw error;
+    } catch (error: any) {
+      console.error("Sign-up error:", error.message);
+      throw error; // This will throw the user-friendly error message
     } finally {
       setIsLoading(false);
     }
@@ -123,9 +123,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       setIsAuthenticated(false);
       router.replace("/sign-in");
-    } catch (error) {
-      console.error("Sign-out error:", error);
-      throw error;
+    } catch (error: any) {
+      console.error("Sign-out error:", error.message);
+      throw error; // This will throw the user-friendly error message
     } finally {
       setIsLoading(false);
     }
@@ -135,9 +135,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await authService.forgotPassword(username);
-    } catch (error) {
-      console.error("Forgot password error:", error);
-      throw error;
+    } catch (error: any) {
+      console.error("Forgot password error:", error.message);
+      throw error; // This will throw the user-friendly error message
     } finally {
       setIsLoading(false);
     }
@@ -151,9 +151,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await authService.confirmForgotPassword(username, code, newPassword);
-    } catch (error) {
-      console.error("Reset password error:", error);
-      throw error;
+    } catch (error: any) {
+      console.error("Reset password error:", error.message);
+      throw error; // This will throw the user-friendly error message
     } finally {
       setIsLoading(false);
     }
@@ -163,9 +163,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await authService.confirmSignUp(username, code);
-    } catch (error) {
-      console.error("Confirm sign-up error:", error);
-      throw error;
+    } catch (error: any) {
+      console.error("Confirm sign-up error:", error.message);
+      throw error; // This will throw the user-friendly error message
     } finally {
       setIsLoading(false);
     }
@@ -175,9 +175,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       await authService.resendConfirmationCode(username);
-    } catch (error) {
-      console.error("Resend confirmation code error:", error);
-      throw error;
+    } catch (error: any) {
+      console.error("Resend confirmation code error:", error.message);
+      throw error; // This will throw the user-friendly error message
     } finally {
       setIsLoading(false);
     }

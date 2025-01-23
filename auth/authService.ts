@@ -15,11 +15,32 @@ const cognitoRequest = async (action: string, body: any) => {
     });
     return response.data;
   } catch (error: any) {
-    console.error(
-      "Cognito request error:",
-      error.response?.data || error.message
-    );
-    throw error;
+    const errorMessage = error.response?.data?.message || error.message;
+    console.error("Cognito request error:", errorMessage);
+
+    // Map Cognito error codes to user-friendly messages
+    if (error.response?.data?.__type) {
+      switch (error.response.data.__type) {
+        case "NotAuthorizedException":
+          throw new Error("Invalid credentials");
+        case "UserNotFoundException":
+          throw new Error("User not found");
+        case "CodeMismatchException":
+          throw new Error("Invalid verification code");
+        case "ExpiredCodeException":
+          throw new Error("Verification code has expired");
+        case "LimitExceededException":
+          throw new Error("Attempt limit exceeded, please try again later");
+        case "UsernameExistsException":
+          throw new Error("Username already exists");
+        case "AliasExistsException":
+          throw new Error("Email already exists");
+        default:
+          throw new Error(errorMessage);
+      }
+    } else {
+      throw new Error(errorMessage);
+    }
   }
 };
 
@@ -39,7 +60,7 @@ export const authService = {
       const response = await cognitoRequest("InitiateAuth", body);
       return response.AuthenticationResult;
     } catch (error: any) {
-      console.error("Sign-in error:", error.response?.data || error.message);
+      console.error("Sign-in error:", error.message);
       throw error;
     }
   },
@@ -62,24 +83,26 @@ export const authService = {
     family_name: string;
     phone_number: string;
   }) => {
-    const body = {
-      ClientId: awsConfig.Cognito.userPoolClientId,
-      Username: params.username,
-      Password: params.password,
-      UserAttributes: [
-        { Name: "email", Value: params.email },
-        { Name: "given_name", Value: params.given_name },
-        { Name: "family_name", Value: params.family_name },
-        { Name: "phone_number", Value: params.phone_number },
-      ],
-    };
-
+    // Check if the username or email already exists
     try {
+      // Attempt to sign up the user
+      const body = {
+        ClientId: awsConfig.Cognito.userPoolClientId,
+        Username: params.username,
+        Password: params.password,
+        UserAttributes: [
+          { Name: "email", Value: params.email },
+          { Name: "given_name", Value: params.given_name },
+          { Name: "family_name", Value: params.family_name },
+          { Name: "phone_number", Value: params.phone_number },
+        ],
+      };
+
       const response = await cognitoRequest("SignUp", body);
       return response; // Contains UserSub, etc.
     } catch (error: any) {
-      console.error("Sign-up error:", error.response?.data || error.message);
-      throw error;
+      console.error("Sign-up error:", error.message);
+      throw error; // This will throw the user-friendly error message
     }
   },
 
@@ -95,10 +118,7 @@ export const authService = {
       const response = await cognitoRequest("ConfirmSignUp", body);
       return response;
     } catch (error: any) {
-      console.error(
-        "Confirm sign-up error:",
-        error.response?.data || error.message
-      );
+      console.error("Confirm sign-up error:", error.message);
       throw error;
     }
   },
@@ -114,10 +134,7 @@ export const authService = {
       const response = await cognitoRequest("ForgotPassword", body);
       return response;
     } catch (error: any) {
-      console.error(
-        "Forgot password error:",
-        error.response?.data || error.message
-      );
+      console.error("Forgot password error:", error.message);
       throw error;
     }
   },
@@ -139,10 +156,7 @@ export const authService = {
       const response = await cognitoRequest("ConfirmForgotPassword", body);
       return response;
     } catch (error: any) {
-      console.error(
-        "Confirm forgot password error:",
-        error.response?.data || error.message
-      );
+      console.error("Confirm forgot password error:", error.message);
       throw error;
     }
   },
@@ -158,10 +172,7 @@ export const authService = {
       const response = await cognitoRequest("ResendConfirmationCode", body);
       return response;
     } catch (error: any) {
-      console.error(
-        "Resend confirmation code error:",
-        error.response?.data || error.message
-      );
+      console.error("Resend confirmation code error:", error.message);
       throw error;
     }
   },
@@ -189,10 +200,7 @@ export const authService = {
         attributes: userAttributes,
       };
     } catch (error: any) {
-      console.error(
-        "Error fetching current user:",
-        error.response?.data || error.message
-      );
+      console.error("Error fetching current user:", error.message);
       throw error;
     }
   },

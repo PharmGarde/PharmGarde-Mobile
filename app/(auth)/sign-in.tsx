@@ -13,7 +13,6 @@ import { useAuth } from "../../auth/authContext";
 import { useTranslation } from "react-i18next";
 import Navbar from "@/components/Navbar";
 import { useLayoutDirection } from "@/hooks/useLayoutDirection";
-import { authService } from "@/auth/authService";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
@@ -67,7 +66,10 @@ export default function SignIn() {
       router.replace("/(home)");
     } catch (error: any) {
       console.error("Sign-in error:", error);
-      setErrors((prev) => ({ ...prev, general: error.message }));
+      setErrors((prev) => ({
+        ...prev,
+        general: error.message || t("signIn.unknownError"),
+      }));
     } finally {
       setIsLoading(false);
     }

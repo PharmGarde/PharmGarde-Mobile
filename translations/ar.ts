@@ -48,10 +48,12 @@ export default {
   validation: {
     username: {
       required: "اسم المستخدم مطلوب",
+      usernameExists: "اسم المستخدم موجود بالفعل",
     },
     email: {
       required: "البريد الإلكتروني مطلوب",
       invalid: "يرجى إدخال عنوان بريد إلكتروني صالح",
+      emailExists: "البريد الإلكتروني موجود بالفعل",
     },
     password: {
       required: "كلمة المرور مطلوبة",
@@ -86,6 +88,8 @@ export default {
     success: "تم تأكيد الحساب بنجاح",
     resent: "تم إعادة إرسال رمز التحقق",
     error: "حدث خطأ. حاول مرة اخرى.",
+    invalidCode: "رمز التحقق غير صحيح",
+    expiredCode: "رمز التحقق منتهي الصلاحية",
   },
   forgotPassword: {
     title: "نسيت كلمة المرور",
@@ -97,6 +101,7 @@ export default {
     required: "اسم المستخدم مطلوب",
     success: "تم إرسال رمز إعادة التعيين بنجاح",
     error: "حدث خطأ. حاول مرة اخرى.",
+    userNotFound: "المستخدم غير موجود",
   },
   resetPassword: {
     title: "إعادة تعيين كلمة المرور",
@@ -112,5 +117,7 @@ export default {
     passwordTooShort: "يجب أن تكون كلمة المرور 8 أحرف على الأقل",
     success: "تم إعادة تعيين كلمة المرور بنجاح",
     error: "حدث خطأ. حاول مرة اخرى.",
+    expiredCode: "رمز التحقق منتهي الصلاحية",
+    invalidCode: "رمز التحقق غير صحيح",
   },
 };

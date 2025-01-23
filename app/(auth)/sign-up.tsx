@@ -141,6 +141,8 @@ export default function SignUp() {
     }
 
     setIsLoading(true);
+    setErrors((prev) => ({ ...prev, general: "" }));
+
     try {
       const result = await signUp({
         username: formData.username,
@@ -158,10 +160,16 @@ export default function SignUp() {
         });
       }
     } catch (error: any) {
-      setErrors((prev) => ({
-        ...prev,
-        general: error.message || t("validation.general.error"),
-      }));
+      if (error.message === "Username already exists") {
+        setErrors((prev) => ({ ...prev, username: "usernameExists" }));
+      } else if (error.message === "Email already exists") {
+        setErrors((prev) => ({ ...prev, email: "emailExists" }));
+      } else {
+        setErrors((prev) => ({
+          ...prev,
+          general: error.message || t("validation.general.error"),
+        }));
+      }
     } finally {
       setIsLoading(false);
     }

@@ -56,7 +56,13 @@ export default function ResetPassword() {
         router.push("/sign-in");
       }, 1500);
     } catch (error: any) {
-      setError("error");
+      if (error.message === "Invalid verification code") {
+        setError("invalidCode");
+      } else if (error.message === "Verification code has expired") {
+        setError("expiredCode");
+      } else {
+        setError("error");
+      }
       console.error("Reset password error:", error);
     } finally {
       setIsLoading(false);

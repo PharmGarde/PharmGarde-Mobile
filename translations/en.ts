@@ -48,10 +48,12 @@ export default {
   validation: {
     username: {
       required: "Username is required",
+      usernameExists: "Username already exists",
     },
     email: {
       required: "Email is required",
       invalid: "Please enter a valid email address",
+      emailExists: "Email already exists",
     },
     password: {
       required: "Password is required",
@@ -86,6 +88,8 @@ export default {
     success: "Account confirmed successfully",
     resent: "Verification code has been resent",
     error: "An error occurred. Please try again.",
+    invalidCode: "Invalid verification code",
+    expiredCode: "Verification code has expired",
   },
   forgotPassword: {
     title: "Forgot Password",
@@ -97,6 +101,7 @@ export default {
     required: "Username is required",
     success: "Reset code sent successfully",
     error: "An error occurred. Please try again.",
+    userNotFound: "User not found",
   },
   resetPassword: {
     title: "Reset Password",
@@ -112,5 +117,7 @@ export default {
     passwordTooShort: "Password must be at least 8 characters",
     success: "Password reset successfully",
     error: "An error occurred. Please try again.",
+    expiredCode: "Verification code has expired",
+    invalidCode: "Invalid verification code",
   },
 };

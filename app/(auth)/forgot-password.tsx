@@ -43,7 +43,11 @@ export default function ForgotPassword() {
         params: { username },
       });
     } catch (error: any) {
-      setError("error");
+      if (error.message === "User not found") {
+        setError("userNotFound");
+      } else {
+        setError("error");
+      }
       console.error("Forgot password error:", error);
     } finally {
       setIsLoading(false);
