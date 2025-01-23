@@ -18,6 +18,10 @@ export default {
     usernameRequired: "اسم المستخدم مطلوب",
     passwordRequired: "كلمة المرور مطلوبة",
     forgotPassword: "نسيت كلمة المرور؟",
+    userNotFound: "المستخدم غير موجود",
+    invalidCredentials: "بيانات الاعتماد غير صالحة",
+    userNotConfirmed: "المستخدم غير مؤكد",
+    unknownError: "حدث خطأ غير معروف",
   },
   signUp: {
     createAccount: "إنشاء حساب",

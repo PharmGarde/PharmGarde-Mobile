@@ -11,7 +11,6 @@ import { useAuth } from "../../auth/authContext";
 import { useTranslation } from "react-i18next";
 import Navbar from "@/components/Navbar";
 import { useLayoutDirection } from "@/hooks/useLayoutDirection";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({
@@ -63,12 +62,6 @@ export default function SignIn() {
       console.log("Attempting to sign in with:", formData.username);
       const user = await signIn(formData.username, formData.password);
       console.log("Sign-in successful:", user);
-
-      // Verify AsyncStorage contents
-      const keys = await AsyncStorage.getAllKeys();
-      const items = await AsyncStorage.multiGet(keys);
-      console.log("AsyncStorage contents after sign-in:", items);
-
       router.replace("/(app)/home"); // Redirect to home after successful sign-in
     } catch (error: any) {
       console.error("Sign-in error:", error);

@@ -4,9 +4,12 @@ import { Stack } from "expo-router";
 import { AuthProvider } from "../auth/authContext";
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
+import { I18nextProvider } from "react-i18next";
+import i18n from "../i18n/i18nConfig";
 import { awsConfig } from "../auth/authConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+// Prevent the splash screen from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -61,13 +64,17 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <AuthProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(home)" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(app)" />
-        <Stack.Screen name="index" options={{ headerShown: false }} />
-      </Stack>
-    </AuthProvider>
+    <I18nextProvider i18n={i18n}>
+      {" "}
+      {/* Wrap your app with I18nextProvider */}
+      <AuthProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(home)" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(app)" />
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+        </Stack>
+      </AuthProvider>
+    </I18nextProvider>
   );
 }
