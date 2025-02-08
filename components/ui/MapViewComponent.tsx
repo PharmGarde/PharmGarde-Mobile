@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker, Polyline } from 'react-native-maps';
@@ -27,8 +25,8 @@ type MapViewComponentProps = {
   currentLocation: Coordinates | null;
   youssoufiaCoords: Coordinates;
   filteredPharmacies: Pharmacy[];
-  onMarkerPress: (pharmacy: Pharmacy) => void; // Callback for marker press
-  selectedPharmacy: Pharmacy | null; // Track selected pharmacy
+  onMarkerPress: (pharmacy: Pharmacy) => void;
+  selectedPharmacy: Pharmacy | null;
 };
 
 const MapViewComponent = ({
@@ -38,10 +36,9 @@ const MapViewComponent = ({
   onMarkerPress,
   selectedPharmacy,
 }: MapViewComponentProps) => {
-  const [routeCoordinates, setRouteCoordinates] = useState<Coordinates[]>([]); // Store route coordinates
-  const [userLocation, setUserLocation] = useState<Coordinates | null>(null); // Track live user location
+  const [routeCoordinates, setRouteCoordinates] = useState<Coordinates[]>([]);
+  const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
 
-  // Fetch route from OSRM
   useEffect(() => {
     if (selectedPharmacy && currentLocation) {
       const fetchRoute = async () => {
@@ -52,12 +49,12 @@ const MapViewComponent = ({
           const data = await response.json();
 
           if (data.routes && data.routes[0]) {
-            const points = polyline.decode(data.routes[0].geometry); // Decode polyline
+            const points = polyline.decode(data.routes[0].geometry);
             const coords = points.map((point) => ({
               latitude: point[0],
               longitude: point[1],
             }));
-            setRouteCoordinates(coords); // Set route coordinates
+            setRouteCoordinates(coords);
           }
         } catch (error) {
           console.error('Error fetching route:', error);
@@ -66,11 +63,10 @@ const MapViewComponent = ({
 
       fetchRoute();
     } else {
-      setRouteCoordinates([]); // Clear route if no pharmacy is selected
+      setRouteCoordinates([]);
     }
   }, [selectedPharmacy, currentLocation]);
 
-  // Track user's live location
   useEffect(() => {
     let locationSubscription: Location.LocationSubscription;
 
@@ -81,23 +77,21 @@ const MapViewComponent = ({
         return;
       }
 
-      // Start tracking location
       locationSubscription = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.High,
-          timeInterval: 5000, // Update every 5 seconds
-          distanceInterval: 10, // Update every 10 meters
+          timeInterval: 5000,
+          distanceInterval: 10,
         },
         (location) => {
           const { latitude, longitude } = location.coords;
-          setUserLocation({ latitude, longitude }); // Update user's live location
+          setUserLocation({ latitude, longitude });
         }
       );
     };
 
     startTracking();
 
-    // Cleanup subscription
     return () => {
       if (locationSubscription) {
         locationSubscription.remove();
@@ -105,7 +99,6 @@ const MapViewComponent = ({
     };
   }, []);
 
-  // 0.27 roughly equals 30km in latitude degrees
   const THIRTY_KM_DELTA = 0.27;
 
   return (
@@ -140,16 +133,15 @@ const MapViewComponent = ({
             title={pharmacy.name}
             description={pharmacy.address}
             pinColor={pharmacy.isOnDuty ? 'green' : 'red'}
-            onPress={() => onMarkerPress(pharmacy)} // Handle marker press
+            onPress={() => onMarkerPress(pharmacy)}
           />
         ))}
 
-        {/* Draw the route polyline */}
         {routeCoordinates.length > 0 && (
           <Polyline
             coordinates={routeCoordinates}
-            strokeColor="#FF0000" // Red color for the route
-            strokeWidth={3} // Thickness of the route line
+            strokeColor="#FF0000"
+            strokeWidth={3}
           />
         )}
       </MapView>
@@ -159,11 +151,16 @@ const MapViewComponent = ({
 
 const styles = StyleSheet.create({
   container: {
-    height: Dimensions.get('window').height * 0.35,
+    height: Dimensions.get('window').height * 0.5,
     marginHorizontal: 16,
     marginBottom: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     overflow: 'hidden',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -171,3 +168,13 @@ const styles = StyleSheet.create({
 });
 
 export default MapViewComponent;
+
+
+
+
+
+
+
+
+
+
