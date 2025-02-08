@@ -50,8 +50,7 @@
             "./assets/fonts/Rubik-ExtraBold.ttf"
           ]
         }
-      ],
-      "expo-secure-store"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

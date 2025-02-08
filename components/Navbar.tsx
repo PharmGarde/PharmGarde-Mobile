@@ -1,9 +1,8 @@
-import { View, TouchableOpacity, Text, Animated } from "react-native";
-import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import React, { useState, useRef, useEffect } from "react";
-import { useAuth } from "../auth/authContext";
-import { useTranslation } from "react-i18next";
+import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useState } from 'react';
+import React from 'react';
 
 export default function Navbar() {
   const router = useRouter();

@@ -4,8 +4,7 @@ import images from '@/constants/image';
 import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios';
 import CardPharmacy from './CardPharmacy';
-import NearbyPlaces from "@/app/(app)/geolocalisation";
-import { router } from 'expo-router';
+import apiClient from '@/config/axios';
 
 interface dataPharmacy {
     _id: string,
@@ -25,7 +24,8 @@ export default function Filtrage() {
     useEffect(() => {
         async function specialShift() {
             try {
-                const results = await axios.get(`http://192.168.0.131:3000/pharmacy`);
+                let results = await axios.get(`http://172.16.8.207:3000/pharmacy`);
+                // console.log("results.data",results.data);
                 if (results?.data) {
                     const weekend = results.data.filter((item: dataPharmacy) => item.weekendshift);
                     const night = results.data.filter((item: dataPharmacy) => item.nightshift);
@@ -38,8 +38,8 @@ export default function Filtrage() {
             }
         }
         specialShift();
-    }, []);
-
+    }, [])
+    // console.log('check the state', weekendShiftData.length);
     return (
         <View className="w-full bg-[#007f5f] p-4 rounded-md">
             <Text className='text-white font-rubik-bold text-center text-xl'>Let's dive into the Duty pharmacies</Text>
@@ -110,6 +110,7 @@ export default function Filtrage() {
                             <Text className='font-rubik-bold text-center'>
                                 No weekend shift available
                             </Text>
+                            <Text>{weekendShiftData.length}</Text>
                         </View>
                     )}
                 </>
@@ -130,6 +131,7 @@ export default function Filtrage() {
                             <Text className='font-rubik-bold text-center'>
                                 No night shift available
                             </Text>
+                        
                         </View>
                     )}
                 </>

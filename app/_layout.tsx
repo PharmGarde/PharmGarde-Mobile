@@ -1,4 +1,3 @@
-
 import { Amplify } from '@aws-amplify/core';
 import '@aws-amplify/react-native';
 import * as SplashScreen from "expo-splash-screen";
@@ -65,18 +64,20 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
+    <AuthProvider>
 
-    <I18nextProvider i18n={i18n}>
-      {" "}
-      {/* Wrap your app with I18nextProvider */}
-      <AuthProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(home)"  options={{ headerShown: false }}  />
-          <Stack.Screen name="(auth)" />
-          <Stack.Screen name="(app)" />
-          <Stack.Screen name="index" options={{ headerShown: false }} />
-        </Stack>
-      </AuthProvider>
-    </I18nextProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+      {/* <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(home)/index" />
+        <Stack.Screen name="DetailsPage" />
+        <Stack.Screen name="(auth)" />
+        <Stack.Screen name="(app)" />
+        <Stack.Screen name="(favorites)" />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+      </Stack> */}
+    </AuthProvider>
   );
 }
