@@ -11,7 +11,7 @@ export default function Details() {
         ? JSON.parse(params.pharmacy)
         : params.pharmacy;
 
-    console.log('Weekend shift value:', pharmacy.weekendshift, typeof pharmacy.weekendshift);
+    // console.log('Weekend shift value:', pharmacy.weekendshift, typeof pharmacy.weekendshift);
 
     return (
         <>

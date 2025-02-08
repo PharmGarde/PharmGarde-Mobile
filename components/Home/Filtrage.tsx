@@ -4,6 +4,7 @@ import images from '@/constants/image';
 import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios';
 import CardPharmacy from './CardPharmacy';
+import apiClient from '@/config/axios';
 
 interface dataPharmacy {
     _id: string,
@@ -22,7 +23,8 @@ export default function Filtrage() {
     useEffect(() => {
         async function specialShift() {
             try {
-                let results = await axios.get(`http://192.168.0.131:3000/pharmacy`);
+                let results = await axios.get(`http://172.16.8.207:3000/pharmacy`);
+                // console.log("results.data",results.data);
                 if (results?.data) {
                     for (let i = 0; i < results.data.length; i++) {
                         if (results.data[i].weekendshift == true) {
@@ -41,7 +43,7 @@ export default function Filtrage() {
         }
         specialShift();
     }, [])
-    // console.log('check the state', weekendShiftData);
+    // console.log('check the state', weekendShiftData.length);
     return (
         <View className="w-full bg-[#007f5f] p-4 rounded-md ">
             <Text className='text-white font-rubik-bold text-center text-xl'>Let dive to the Duty pharmacies</Text>
@@ -106,6 +108,7 @@ export default function Filtrage() {
                             <Text className='font-rubik-bold text-center flex justify-center items-center'>
                                 No weekend shift availableee
                             </Text>
+                            <Text>{weekendShiftData.length}</Text>
                         </View>
 
                     )}
@@ -128,6 +131,7 @@ export default function Filtrage() {
                                 No night shift available
 
                             </Text>
+                        
                         </View>
 
                     )}
