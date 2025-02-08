@@ -4,15 +4,15 @@ import { Colors } from '@/constants/Colors';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 
 interface PharmacyCardProps {
-  id: string;
+  _id: string;
   name: string;
   location: string;
   image: string;
-  onRemove: (id: string) => void;
+  onRemove: (_id: string) => void;
 }
 
 export const PharmacyCard: React.FC<PharmacyCardProps> = ({
-  id,
+  _id,
   name,
   location,
   image,
@@ -38,7 +38,7 @@ export const PharmacyCard: React.FC<PharmacyCardProps> = ({
       </View>
       <TouchableOpacity
         style={styles.removeButton}
-        onPress={() => onRemove(id)}
+        onPress={() => onRemove(_id)}
       >
         <IconSymbol name="trash" size={20} color={Colors.light.background} />
       </TouchableOpacity>

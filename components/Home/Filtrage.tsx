@@ -24,7 +24,7 @@ export default function Filtrage() {
         async function specialShift() {
             try {
                 let results = await axios.get(`http://172.16.8.207:3000/pharmacy`);
-                console.log("results.data",results.data);
+                // console.log("results.data",results.data);
                 if (results?.data) {
                     for (let i = 0; i < results.data.length; i++) {
                         if (results.data[i].weekendshift == true) {
@@ -43,7 +43,7 @@ export default function Filtrage() {
         }
         specialShift();
     }, [])
-    console.log('check the state', weekendShiftData.length);
+    // console.log('check the state', weekendShiftData.length);
     return (
         <View className="w-full bg-[#007f5f] p-4 rounded-md ">
             <Text className='text-white font-rubik-bold text-center text-xl'>Let dive to the Duty pharmacies</Text>

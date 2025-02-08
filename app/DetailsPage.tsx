@@ -11,14 +11,14 @@ export default function Details() {
         ? JSON.parse(params.pharmacy)
         : params.pharmacy;
 
-    console.log('Weekend shift value:', pharmacy.weekendshift, typeof pharmacy.weekendshift);
+    // console.log('Weekend shift value:', pharmacy.weekendshift, typeof pharmacy.weekendshift);
 
     return (
         <>
             
             <View className="w-full h-full bg-[#007f5f] p-4 rounded-md ">
 
-                <Text className="font-rubik-bold text-white text-center text-lg">Details of pharmacy inside (tabs)</Text>
+                <Text className="font-rubik-bold text-white text-center text-lg">Details of pharmacy</Text>
                 <View className='!bg-gray-100 mt-2 rounded-md flex flex-row gap-4 p-2'>
                     <View>
                         <Image source={images.pharmacyIllustration} className="w-32 h-32" resizeMode="contain" />

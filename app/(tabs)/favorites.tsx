@@ -4,12 +4,8 @@ import { Colors } from '@/constants/Colors';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import { PharmacyCard } from '@/components/PharmacyCard';
 import apiClient from "@/config/axios";
+import CardPharmacy from '@/components/Home/CardPharmacy';
 
-// const initialPharmacies = [
-//   { id: '1', name: 'Pharmacy 1', location: '123 Main St', image: require('@/assets/images/default-pharmacy.jpg') },
-//   { id: '2', name: 'Pharmacy 2', location: '456 Oak Rd', image: require('@/assets/images/default-pharmacy.jpg') },
-//   { id: '3', name: 'Pharmacy 3', location: '789 Pine Ln', image: require('@/assets/images/default-pharmacy.jpg') },
-// ];
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
@@ -18,53 +14,44 @@ const Favorites = () => {
     async function fetchFavorites(){
         const response = await apiClient.get('/favorites');
         const pharmacies = response.data[0].pharmacies;
-        console.log('response',response.data[0].pharmacies);
-        setFavorites(pharmacies);
-
-      
+        // console.log('response',response.data[0].pharmacies);
+        setFavorites(pharmacies);      
         return pharmacies;
     }
 
     fetchFavorites();
   },[]);
 
-  console.log('favorites', favorites);
+  // console.log('favorites', favorites);
 
   const removeFromFavorites = (id: string) => {
     setFavorites(favorites.filter((pharmacy) => pharmacy.id !== id));
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Favorites</Text>
-        <Text style={styles.subtitle}>Your saved pharmacies</Text>
-      </View>
-      {favorites.length > 0 ? (
-        <FlatList
-          data={favorites}
-          keyExtractor={(item) => item._id}
-          renderItem={({ item }) => (
-            <PharmacyCard
-              id={item._id}
-              name={item.name}
-              location={item.address}
-              image={''}
-              onRemove={removeFromFavorites}
-            />
-          )}
-          contentContainerStyle={styles.listContainer}
-          showsVerticalScrollIndicator={false}
-        />
-      ) : (
-        <View style={styles.emptyState}>
-          <IconSymbol name="heart" size={48} color={Colors.light.icon} />
-          <Text style={styles.noFavoritesText}>No favorite pharmacies yet</Text>
-          <Text style={styles.noFavoritesSubtext}>
-            Your saved pharmacies will appear here
-          </Text>
+    <View className="flex-1 bg-[#007f5f]">
+    <Text className='text-white font-rubik-bold text-center text-xl'>Let dive to the Duty pharmacies</Text>
+    <Text className="font-rubik-medium text-center  text-white py-5">
+        <Text className='font-rubik-bold text-lg'> Your saved pharmacies</Text>
+    </Text>
+        <View>
+                       {favorites.length > 0 ? (
+                        <FlatList
+                            data={favorites}
+                            keyExtractor={(item) => item._id}
+                            renderItem={({ item }) => <CardPharmacy dataPharmacy={item} />}
+                            showsVerticalScrollIndicator={false}
+                        />
+                      ) : (
+                        <View style={styles.emptyState}>
+                          <IconSymbol name="heart" size={48} color={Colors.light.icon} />
+                          <Text style={styles.noFavoritesText}>No favorite pharmacies yet</Text>
+                          <Text style={styles.noFavoritesSubtext}>
+                            Your saved pharmacies will appear here
+                          </Text>
+                        </View>
+                      )}
         </View>
-      )}
     </View>
   );
 };
