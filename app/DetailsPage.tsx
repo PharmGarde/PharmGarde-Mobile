@@ -20,7 +20,7 @@ export default function Details() {
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const response = await axios.get(`http://172.16.8.207:3000/comments/${pharmacy._id}`);
+                const response = await axios.get(`http://172.16.9.4:3000/comments/${pharmacy._id}`);
                 const data = await response.data;
                 setComments(data);
             } catch (error) {

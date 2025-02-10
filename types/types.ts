@@ -1,17 +1,19 @@
-export type Coordinates = {
-    latitude: number;
-    longitude: number;
-  };
+export interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
 
+interface Pharmacy {
+  id: string;
+  _id?: string; // For API compatibility
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  phoneNumber: string;
+  isOnDuty?: boolean;
+  nightshift?: boolean;
+  weekendshift?: boolean;
+  openingHoursNight?: string;
+}
 
-export  type Pharmacy = {
-    id: string;
-    name: string;
-    address: string;
-    image: any;
-    latitude: number;
-    longitude: number;
-    isOnDuty: boolean;
-    openingHours: string;
-    phoneNumber: string;
-  };

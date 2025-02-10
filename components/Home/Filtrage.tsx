@@ -5,6 +5,9 @@ import { Ionicons } from '@expo/vector-icons'
 import axios from 'axios';
 import CardPharmacy from './CardPharmacy';
 import apiClient from '@/config/axios';
+import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
+
 
 interface dataPharmacy {
     _id: string,
@@ -17,6 +20,8 @@ interface dataPharmacy {
 }
 
 export default function Filtrage() {
+    const navigation = useNavigation();
+
     const [selectedOption, setSelectedOption] = useState('nearby');
     const [nightShiftData, setNightShiftData] = useState<dataPharmacy[]>([]);
     const [weekendShiftData, setWeekendShiftData] = useState<dataPharmacy[]>([]);
@@ -42,10 +47,19 @@ export default function Filtrage() {
     // console.log('check the state', weekendShiftData.length);
     return (
         <View className="w-full bg-[#007f5f] p-4 rounded-md">
+
             <Text className='text-white font-rubik-bold text-center text-xl'>Let's dive into the Duty pharmacies</Text>
+            <Text 
+    className="text-white font-rubik text-center text-lg" 
+    onPress={() => { router.push("/(app)/geolocalisation"); }}
+>
+    To Geolocalisation
+</Text>
+
             <Text className="font-rubik-medium text-center text-white py-5">
                 Choose your preference: {'\n'} <Text className='font-rubik-bold text-lg'>we've got you covered anytime!</Text>
             </Text>
+            
             <View className="flex-row justify-around p-2 bg-gray-100 rounded-lg">
                 <TouchableOpacity onPress={() => setSelectedOption('nearby')} className={`p-3 rounded-md justify-center items-center ${selectedOption === 'nearby' ? 'bg-[#007f5f9d]' : 'bg-gray-200'}`}>
                     <Text className="text-gray-800 font-medium">Near Me</Text>
