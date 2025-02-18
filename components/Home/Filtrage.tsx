@@ -23,7 +23,7 @@ export default function Filtrage() {
     useEffect(() => {
         async function specialShift() {
             try {
-                let results = await axios.get(`http://172.16.8.207:3000/pharmacy`);
+                let results = await axios.get(`http://192.168.100.117:8080/pharmacies`);
                 // console.log("results.data",results.data);
                 if (results?.data) {
                     for (let i = 0; i < results.data.length; i++) {
@@ -108,7 +108,7 @@ export default function Filtrage() {
                             <Text className='font-rubik-bold text-center flex justify-center items-center'>
                                 No weekend shift availableee
                             </Text>
-                            <Text>{weekendShiftData.length}</Text>
+                            {/* <Text>{weekendShiftData.length}</Text> */}
                         </View>
 
                     )}
